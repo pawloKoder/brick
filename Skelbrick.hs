@@ -19,14 +19,6 @@ transProgram x = case x of
   Progr fundeclarations  -> failure x
 
 
-transType_specifier :: Type_specifier -> Result
-transType_specifier x = case x of
-  Tnone  -> failure x
-  Tint  -> failure x
-  Tstring  -> failure x
-  Tbool  -> failure x
-
-
 transStm :: Stm -> Result
 transStm x = case x of
   SIf exp exps  -> failure x
@@ -64,7 +56,7 @@ transExp x = case x of
 
 transFunDeclaration :: FunDeclaration -> Result
 transFunDeclaration x = case x of
-  FunDeclaration cident stms  -> failure x
+  FunDec cident stms  -> failure x
 
 
 

@@ -89,14 +89,6 @@ instance Print Program where
    Progr fundeclarations -> prPrec i 0 (concatD [prt 0 fundeclarations])
 
 
-instance Print Type_specifier where
-  prt i e = case e of
-   Tnone  -> prPrec i 0 (concatD [doc (showString "None")])
-   Tint  -> prPrec i 0 (concatD [doc (showString "Int")])
-   Tstring  -> prPrec i 0 (concatD [doc (showString "String")])
-   Tbool  -> prPrec i 0 (concatD [doc (showString "Bool")])
-
-
 instance Print Stm where
   prt i e = case e of
    SIf exp exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 exps , doc (showString "]")])
@@ -141,7 +133,7 @@ instance Print Exp where
 
 instance Print FunDeclaration where
   prt i e = case e of
-   FunDeclaration cident stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Def") , prt 0 cident , prt 0 stms , doc (showString "]")])
+   FunDec cident stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Def") , prt 0 cident , prt 0 stms , doc (showString "]")])
 
   prtList es = case es of
    [] -> (concatD [])

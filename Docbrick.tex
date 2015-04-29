@@ -44,12 +44,10 @@ The set of reserved words is the set of terminals appearing in the grammar. Thos
 The reserved words used in brick are the following: \\
 
 \begin{tabular}{lll}
-{\reserved{Bool}} &{\reserved{Break}} &{\reserved{Continue}} \\
-{\reserved{Def}} &{\reserved{Else}} &{\reserved{False}} \\
-{\reserved{For}} &{\reserved{If}} &{\reserved{Int}} \\
-{\reserved{Let}} &{\reserved{None}} &{\reserved{Return}} \\
-{\reserved{String}} &{\reserved{True}} &{\reserved{While}} \\
-{\reserved{Yield}} & & \\
+{\reserved{Break}} &{\reserved{Continue}} &{\reserved{Def}} \\
+{\reserved{Else}} &{\reserved{False}} &{\reserved{For}} \\
+{\reserved{If}} &{\reserved{Let}} &{\reserved{Return}} \\
+{\reserved{True}} &{\reserved{While}} &{\reserved{Yield}} \\
 \end{tabular}\\
 
 The symbols used in brick are the following: \\
@@ -69,13 +67,6 @@ All other symbols are terminals.\\
 
 \begin{tabular}{lll}
 {\nonterminal{Program}} & {\arrow}  &{\nonterminal{ListFunDeclaration}}  \\
-\end{tabular}\\
-
-\begin{tabular}{lll}
-{\nonterminal{Type-specifier}} & {\arrow}  &{\terminal{None}}  \\
- & {\delimit}  &{\terminal{Int}}  \\
- & {\delimit}  &{\terminal{String}}  \\
- & {\delimit}  &{\terminal{Bool}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}

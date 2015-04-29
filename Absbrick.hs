@@ -8,13 +8,6 @@ data Program =
    Progr [FunDeclaration]
   deriving (Eq,Ord,Show)
 
-data Type_specifier =
-   Tnone
- | Tint
- | Tstring
- | Tbool
-  deriving (Eq,Ord,Show)
-
 data Stm =
    SIf Exp [Exp]
  | SIfSkip Exp [Exp]
@@ -48,6 +41,6 @@ data Exp =
   deriving (Eq,Ord,Show)
 
 data FunDeclaration =
-   FunDeclaration CIdent [Stm]
+   FunDec CIdent [Stm]
   deriving (Eq,Ord,Show)
 

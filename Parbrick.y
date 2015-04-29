@@ -16,24 +16,20 @@ import ErrM
 
 %token 
  ' ' { PT _ (TS _ 1) }
- 'Bool' { PT _ (TS _ 2) }
- 'Break' { PT _ (TS _ 3) }
- 'Continue' { PT _ (TS _ 4) }
- 'Def' { PT _ (TS _ 5) }
- 'Else' { PT _ (TS _ 6) }
- 'False' { PT _ (TS _ 7) }
- 'For' { PT _ (TS _ 8) }
- 'If' { PT _ (TS _ 9) }
- 'Int' { PT _ (TS _ 10) }
- 'Let' { PT _ (TS _ 11) }
- 'None' { PT _ (TS _ 12) }
- 'Return' { PT _ (TS _ 13) }
- 'String' { PT _ (TS _ 14) }
- 'True' { PT _ (TS _ 15) }
- 'While' { PT _ (TS _ 16) }
- 'Yield' { PT _ (TS _ 17) }
- '[' { PT _ (TS _ 18) }
- ']' { PT _ (TS _ 19) }
+ 'Break' { PT _ (TS _ 2) }
+ 'Continue' { PT _ (TS _ 3) }
+ 'Def' { PT _ (TS _ 4) }
+ 'Else' { PT _ (TS _ 5) }
+ 'False' { PT _ (TS _ 6) }
+ 'For' { PT _ (TS _ 7) }
+ 'If' { PT _ (TS _ 8) }
+ 'Let' { PT _ (TS _ 9) }
+ 'Return' { PT _ (TS _ 10) }
+ 'True' { PT _ (TS _ 11) }
+ 'While' { PT _ (TS _ 12) }
+ 'Yield' { PT _ (TS _ 13) }
+ '[' { PT _ (TS _ 14) }
+ ']' { PT _ (TS _ 15) }
 
 L_integ  { PT _ (TI $$) }
 L_quoted { PT _ (TL $$) }
@@ -49,13 +45,6 @@ CIdent    :: { CIdent} : L_CIdent { CIdent ($1)}
 
 Program :: { Program }
 Program : ListFunDeclaration { Progr (reverse $1) } 
-
-
-Type_specifier :: { Type_specifier }
-Type_specifier : 'None' { Tnone } 
-  | 'Int' { Tint }
-  | 'String' { Tstring }
-  | 'Bool' { Tbool }
 
 
 Stm :: { Stm }
@@ -102,7 +91,7 @@ ListExp : {- empty -} { [] }
 
 
 FunDeclaration :: { FunDeclaration }
-FunDeclaration : '[' 'Def' CIdent ListStm ']' { FunDeclaration $3 (reverse $4) } 
+FunDeclaration : '[' 'Def' CIdent ListStm ']' { FunDec $3 (reverse $4) } 
 
 
 ListFunDeclaration :: { [FunDeclaration] }
