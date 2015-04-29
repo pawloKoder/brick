@@ -11,13 +11,14 @@ Tstring.     Type_specifier ::= "String";
 Tbool.       Type_specifier ::= "Bool";
 
 
-separator Exp " " ;
-
-SIf.           Stm ::= "[" "If" Exp [Exp] “]”;
-SIfSkip.       Stm ::= "[" Exp [Exp] “]”;
+SIf.           Stm ::= "[" "If" Exp [Exp] "]";
+SIfSkip.       Stm ::= "[" Exp [Exp] "]";
 SIfElse.       Stm ::= "[" "If" Exp [Exp] "]" "[" "Else" [Exp] "]" ;
 SJump.         Stm ::= Jump_stm ;
 SExp.          Stm ::= Exp ;
+
+separator Stm "" ;
+
 
 SjumpReturn.      Jump_stm ::= "[" "Return" "]" ;
 SjumpReturnV.     Jump_stm ::= "[" "Return" Exp "]" ;
@@ -29,9 +30,9 @@ SjumpContinueV.   Jump_stm ::= "[" "Continue" Exp "]" ;
 ENone.          Exp ::= "[" "]";
 EAsign.         Exp ::= "[" "Let" CIdent Exp"]";
 EFunPar.        Exp ::= "[" Exp [Exp] "]";
-EYield.         Exp ::= "[" “Yield” [Exp] "]";
-ETrue.          Exp ::= "[“ “True” “]" ;
-EFalse.         Exp ::= “[“ “False” “]” ;
+EYield.         Exp ::= "[" "Yield" [Exp] "]";
+ETrue.          Exp ::= "[" "True" "]" ;
+EFalse.         Exp ::= "[" "False" "]" ;
 EIdent.         Exp ::= CIdent ;
 EFor.           Exp ::= "[" "For" CIdent Exp Exp [Exp] "]";
 EWhile.         Exp ::= "[" "While" Exp [Exp] "]";
@@ -39,7 +40,7 @@ EFunDef.        Exp ::= FunDeclaration ;
 EInt.           Exp ::= Integer ;
 EString.        Exp ::= String ;
 
-separator Exp " " 
+separator Exp " " ;
 
 FunDeclaration. FunDeclaration ::= "[" "Def" CIdent [Stm] "]";
 separator FunDeclaration "" ;
