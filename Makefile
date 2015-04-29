@@ -2,7 +2,7 @@ all:
 	happy -gca Parbrick.y
 	alex -g Lexbrick.x
 	latex Docbrick.tex; dvips Docbrick.dvi -o Docbrick.ps
-	ghc --make Testbrick.hs -o Testbrick
+	ghc --make main.hs -o interpreter
 clean:
 	-rm -f *.log *.aux *.hi *.o *.dvi
 	-rm -f Docbrick.ps
