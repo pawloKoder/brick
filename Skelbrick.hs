@@ -46,12 +46,12 @@ transExp x = case x of
   EYield exps  -> failure x
   ETrue  -> failure x
   EFalse  -> failure x
-  EIdent cident  -> failure x
   EFor cident exp1 exp2 exps3  -> failure x
   EWhile exp exps  -> failure x
   EFunDef fundeclaration  -> failure x
   EInt n  -> failure x
   EString str  -> failure x
+  EIdent cident  -> failure x
 
 
 transFunDeclaration :: FunDeclaration -> Result

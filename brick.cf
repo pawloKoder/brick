@@ -23,17 +23,17 @@ SjumpContinue.    Jump_stm ::= "[" "Continue" "]";
 SjumpContinueV.   Jump_stm ::= "[" "Continue" Exp "]" ;
 
 ENone.          Exp ::= "[" "]";
-EAsign.         Exp ::= "[" "Let" CIdent Exp"]";
+EAsign.         Exp ::= "[" "Let" CIdent Exp "]";
 EFunPar.        Exp ::= "[" Exp [Exp] "]";
 EYield.         Exp ::= "[" "Yield" [Exp] "]";
 ETrue.          Exp ::= "[" "True" "]" ;
 EFalse.         Exp ::= "[" "False" "]" ;
-EIdent.         Exp ::= CIdent ;
 EFor.           Exp ::= "[" "For" CIdent Exp Exp [Exp] "]";
 EWhile.         Exp ::= "[" "While" Exp [Exp] "]";
 EFunDef.        Exp ::= FunDeclaration ;
 EInt.           Exp ::= Integer ;
 EString.        Exp ::= String ;
+EIdent.         Exp ::= CIdent ;
 
 separator Exp " " ;
 

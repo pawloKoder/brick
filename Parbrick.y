@@ -76,12 +76,12 @@ Exp : '[' ']' { ENone }
   | '[' 'Yield' ListExp ']' { EYield $3 }
   | '[' 'True' ']' { ETrue }
   | '[' 'False' ']' { EFalse }
-  | CIdent { EIdent $1 }
   | '[' 'For' CIdent Exp Exp ListExp ']' { EFor $3 $4 $5 $6 }
   | '[' 'While' Exp ListExp ']' { EWhile $3 $4 }
   | FunDeclaration { EFunDef $1 }
   | Integer { EInt $1 }
   | String { EString $1 }
+  | CIdent { EIdent $1 }
 
 
 ListExp :: { [Exp] }

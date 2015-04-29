@@ -32,12 +32,12 @@ data Exp =
  | EYield [Exp]
  | ETrue
  | EFalse
- | EIdent CIdent
  | EFor CIdent Exp Exp [Exp]
  | EWhile Exp [Exp]
  | EFunDef FunDeclaration
  | EInt Integer
  | EString String
+ | EIdent CIdent
   deriving (Eq,Ord,Show)
 
 data FunDeclaration =

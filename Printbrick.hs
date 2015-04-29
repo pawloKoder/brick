@@ -119,12 +119,12 @@ instance Print Exp where
    EYield exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Yield") , prt 0 exps , doc (showString "]")])
    ETrue  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "True") , doc (showString "]")])
    EFalse  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "False") , doc (showString "]")])
-   EIdent cident -> prPrec i 0 (concatD [prt 0 cident])
    EFor cident exp0 exp exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "For") , prt 0 cident , prt 0 exp0 , prt 0 exp , prt 0 exps , doc (showString "]")])
    EWhile exp exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "While") , prt 0 exp , prt 0 exps , doc (showString "]")])
    EFunDef fundeclaration -> prPrec i 0 (concatD [prt 0 fundeclaration])
    EInt n -> prPrec i 0 (concatD [prt 0 n])
    EString str -> prPrec i 0 (concatD [prt 0 str])
+   EIdent cident -> prPrec i 0 (concatD [prt 0 cident])
 
   prtList es = case es of
    [] -> (concatD [])
