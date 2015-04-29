@@ -1,0 +1,6 @@
+[Def Main
+  [Let i 0]
+  [For i 1 10
+     [Let i [Add i 1]]
+  ]
+]

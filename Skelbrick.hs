@@ -21,9 +21,8 @@ transProgram x = case x of
 
 transStm :: Stm -> Result
 transStm x = case x of
-  SIf exp exps  -> failure x
-  SIfSkip exp exps  -> failure x
-  SIfElse exp exps1 exps2  -> failure x
+  SIf exp stms  -> failure x
+  SIfElse exp stms1 stms2  -> failure x
   SJump jump_stm  -> failure x
   SExp exp  -> failure x
 
@@ -42,16 +41,16 @@ transExp :: Exp -> Result
 transExp x = case x of
   ENone  -> failure x
   EAsign cident exp  -> failure x
-  EFunPar exp exps  -> failure x
-  EYield exps  -> failure x
+  EYield exp  -> failure x
   ETrue  -> failure x
   EFalse  -> failure x
-  EFor cident exp1 exp2 exps3  -> failure x
-  EWhile exp exps  -> failure x
+  EFor cident exp1 exp2 stms3  -> failure x
+  EWhile exp stms  -> failure x
   EFunDef fundeclaration  -> failure x
   EInt n  -> failure x
   EString str  -> failure x
   EIdent cident  -> failure x
+  EFunPar exp exps  -> failure x
 
 
 transFunDeclaration :: FunDeclaration -> Result

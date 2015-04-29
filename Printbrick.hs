@@ -91,9 +91,8 @@ instance Print Program where
 
 instance Print Stm where
   prt i e = case e of
-   SIf exp exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 exps , doc (showString "]")])
-   SIfSkip exp exps -> prPrec i 0 (concatD [doc (showString "[") , prt 0 exp , prt 0 exps , doc (showString "]")])
-   SIfElse exp exps0 exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 exps0 , doc (showString "]") , doc (showString "[") , doc (showString "Else") , prt 0 exps , doc (showString "]")])
+   SIf exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 stms , doc (showString "]")])
+   SIfElse exp stms0 stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 stms0 , doc (showString "]") , doc (showString "[") , doc (showString "Else") , prt 0 stms , doc (showString "]")])
    SJump jump_stm -> prPrec i 0 (concatD [prt 0 jump_stm])
    SExp exp -> prPrec i 0 (concatD [prt 0 exp])
 
@@ -115,21 +114,20 @@ instance Print Exp where
   prt i e = case e of
    ENone  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "]")])
    EAsign cident exp -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Let") , prt 0 cident , prt 0 exp , doc (showString "]")])
-   EFunPar exp exps -> prPrec i 0 (concatD [doc (showString "[") , prt 0 exp , prt 0 exps , doc (showString "]")])
-   EYield exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Yield") , prt 0 exps , doc (showString "]")])
+   EYield exp -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Yield") , prt 0 exp , doc (showString "]")])
    ETrue  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "True") , doc (showString "]")])
    EFalse  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "False") , doc (showString "]")])
-   EFor cident exp0 exp exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "For") , prt 0 cident , prt 0 exp0 , prt 0 exp , prt 0 exps , doc (showString "]")])
-   EWhile exp exps -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "While") , prt 0 exp , prt 0 exps , doc (showString "]")])
+   EFor cident exp0 exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "For") , prt 0 cident , prt 0 exp0 , prt 0 exp , prt 0 stms , doc (showString "]")])
+   EWhile exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "While") , prt 0 exp , prt 0 stms , doc (showString "]")])
    EFunDef fundeclaration -> prPrec i 0 (concatD [prt 0 fundeclaration])
    EInt n -> prPrec i 0 (concatD [prt 0 n])
    EString str -> prPrec i 0 (concatD [prt 0 str])
    EIdent cident -> prPrec i 0 (concatD [prt 0 cident])
+   EFunPar exp exps -> prPrec i 0 (concatD [doc (showString "[") , prt 0 exp , prt 0 exps , doc (showString "]")])
 
   prtList es = case es of
    [] -> (concatD [])
-   [x] -> (concatD [prt 0 x])
-   x:xs -> (concatD [prt 0 x , doc (showString " ") , prt 0 xs])
+   x:xs -> (concatD [prt 0 x , prt 0 xs])
 
 instance Print FunDeclaration where
   prt i e = case e of

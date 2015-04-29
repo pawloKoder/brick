@@ -15,21 +15,20 @@ import ErrM
 %tokentype { Token }
 
 %token 
- ' ' { PT _ (TS _ 1) }
- 'Break' { PT _ (TS _ 2) }
- 'Continue' { PT _ (TS _ 3) }
- 'Def' { PT _ (TS _ 4) }
- 'Else' { PT _ (TS _ 5) }
- 'False' { PT _ (TS _ 6) }
- 'For' { PT _ (TS _ 7) }
- 'If' { PT _ (TS _ 8) }
- 'Let' { PT _ (TS _ 9) }
- 'Return' { PT _ (TS _ 10) }
- 'True' { PT _ (TS _ 11) }
- 'While' { PT _ (TS _ 12) }
- 'Yield' { PT _ (TS _ 13) }
- '[' { PT _ (TS _ 14) }
- ']' { PT _ (TS _ 15) }
+ 'Break' { PT _ (TS _ 1) }
+ 'Continue' { PT _ (TS _ 2) }
+ 'Def' { PT _ (TS _ 3) }
+ 'Else' { PT _ (TS _ 4) }
+ 'False' { PT _ (TS _ 5) }
+ 'For' { PT _ (TS _ 6) }
+ 'If' { PT _ (TS _ 7) }
+ 'Let' { PT _ (TS _ 8) }
+ 'Return' { PT _ (TS _ 9) }
+ 'True' { PT _ (TS _ 10) }
+ 'While' { PT _ (TS _ 11) }
+ 'Yield' { PT _ (TS _ 12) }
+ '[' { PT _ (TS _ 13) }
+ ']' { PT _ (TS _ 14) }
 
 L_integ  { PT _ (TI $$) }
 L_quoted { PT _ (TL $$) }
@@ -48,9 +47,8 @@ Program : ListFunDeclaration { Progr (reverse $1) }
 
 
 Stm :: { Stm }
-Stm : '[' 'If' Exp ListExp ']' { SIf $3 $4 } 
-  | '[' Exp ListExp ']' { SIfSkip $2 $3 }
-  | '[' 'If' Exp ListExp ']' '[' 'Else' ListExp ']' { SIfElse $3 $4 $8 }
+Stm : '[' 'If' Exp ListStm ']' { SIf $3 (reverse $4) } 
+  | '[' 'If' Exp ListStm ']' '[' 'Else' ListStm ']' { SIfElse $3 (reverse $4) (reverse $8) }
   | Jump_stm { SJump $1 }
   | Exp { SExp $1 }
 
@@ -72,22 +70,21 @@ Jump_stm : '[' 'Return' ']' { SjumpReturn }
 Exp :: { Exp }
 Exp : '[' ']' { ENone } 
   | '[' 'Let' CIdent Exp ']' { EAsign $3 $4 }
-  | '[' Exp ListExp ']' { EFunPar $2 $3 }
-  | '[' 'Yield' ListExp ']' { EYield $3 }
+  | '[' 'Yield' Exp ']' { EYield $3 }
   | '[' 'True' ']' { ETrue }
   | '[' 'False' ']' { EFalse }
-  | '[' 'For' CIdent Exp Exp ListExp ']' { EFor $3 $4 $5 $6 }
-  | '[' 'While' Exp ListExp ']' { EWhile $3 $4 }
+  | '[' 'For' CIdent Exp Exp ListStm ']' { EFor $3 $4 $5 (reverse $6) }
+  | '[' 'While' Exp ListStm ']' { EWhile $3 (reverse $4) }
   | FunDeclaration { EFunDef $1 }
   | Integer { EInt $1 }
   | String { EString $1 }
   | CIdent { EIdent $1 }
+  | '[' Exp ListExp ']' { EFunPar $2 (reverse $3) }
 
 
 ListExp :: { [Exp] }
 ListExp : {- empty -} { [] } 
-  | Exp { (:[]) $1 }
-  | Exp ' ' ListExp { (:) $1 $3 }
+  | ListExp Exp { flip (:) $1 $2 }
 
 
 FunDeclaration :: { FunDeclaration }

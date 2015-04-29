@@ -53,7 +53,7 @@ The reserved words used in brick are the following: \\
 The symbols used in brick are the following: \\
 
 \begin{tabular}{lll}
-{\symb{[}} &{\symb{]}} &{\symb{ }} \\
+{\symb{[}} &{\symb{]}} & \\
 \end{tabular}\\
 
 \subsection*{Comments}
@@ -70,9 +70,8 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{Stm}} & {\arrow}  &{\terminal{[}} {\terminal{If}} {\nonterminal{Exp}} {\nonterminal{ListExp}} {\terminal{]}}  \\
- & {\delimit}  &{\terminal{[}} {\nonterminal{Exp}} {\nonterminal{ListExp}} {\terminal{]}}  \\
- & {\delimit}  &{\terminal{[}} {\terminal{If}} {\nonterminal{Exp}} {\nonterminal{ListExp}} {\terminal{]}} {\terminal{[}} {\terminal{Else}} {\nonterminal{ListExp}} {\terminal{]}}  \\
+{\nonterminal{Stm}} & {\arrow}  &{\terminal{[}} {\terminal{If}} {\nonterminal{Exp}} {\nonterminal{ListStm}} {\terminal{]}}  \\
+ & {\delimit}  &{\terminal{[}} {\terminal{If}} {\nonterminal{Exp}} {\nonterminal{ListStm}} {\terminal{]}} {\terminal{[}} {\terminal{Else}} {\nonterminal{ListStm}} {\terminal{]}}  \\
  & {\delimit}  &{\nonterminal{Jump-stm}}  \\
  & {\delimit}  &{\nonterminal{Exp}}  \\
 \end{tabular}\\
@@ -94,22 +93,21 @@ All other symbols are terminals.\\
 \begin{tabular}{lll}
 {\nonterminal{Exp}} & {\arrow}  &{\terminal{[}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{Let}} {\nonterminal{CIdent}} {\nonterminal{Exp}} {\terminal{]}}  \\
- & {\delimit}  &{\terminal{[}} {\nonterminal{Exp}} {\nonterminal{ListExp}} {\terminal{]}}  \\
- & {\delimit}  &{\terminal{[}} {\terminal{Yield}} {\nonterminal{ListExp}} {\terminal{]}}  \\
+ & {\delimit}  &{\terminal{[}} {\terminal{Yield}} {\nonterminal{Exp}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{True}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{False}} {\terminal{]}}  \\
- & {\delimit}  &{\terminal{[}} {\terminal{For}} {\nonterminal{CIdent}} {\nonterminal{Exp}} {\nonterminal{Exp}} {\nonterminal{ListExp}} {\terminal{]}}  \\
- & {\delimit}  &{\terminal{[}} {\terminal{While}} {\nonterminal{Exp}} {\nonterminal{ListExp}} {\terminal{]}}  \\
+ & {\delimit}  &{\terminal{[}} {\terminal{For}} {\nonterminal{CIdent}} {\nonterminal{Exp}} {\nonterminal{Exp}} {\nonterminal{ListStm}} {\terminal{]}}  \\
+ & {\delimit}  &{\terminal{[}} {\terminal{While}} {\nonterminal{Exp}} {\nonterminal{ListStm}} {\terminal{]}}  \\
  & {\delimit}  &{\nonterminal{FunDeclaration}}  \\
  & {\delimit}  &{\nonterminal{Integer}}  \\
  & {\delimit}  &{\nonterminal{String}}  \\
  & {\delimit}  &{\nonterminal{CIdent}}  \\
+ & {\delimit}  &{\terminal{[}} {\nonterminal{Exp}} {\nonterminal{ListExp}} {\terminal{]}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
 {\nonterminal{ListExp}} & {\arrow}  &{\emptyP} \\
- & {\delimit}  &{\nonterminal{Exp}}  \\
- & {\delimit}  &{\nonterminal{Exp}} {\terminal{ }} {\nonterminal{ListExp}}  \\
+ & {\delimit}  &{\nonterminal{Exp}} {\nonterminal{ListExp}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}

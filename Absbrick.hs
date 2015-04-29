@@ -9,9 +9,8 @@ data Program =
   deriving (Eq,Ord,Show)
 
 data Stm =
-   SIf Exp [Exp]
- | SIfSkip Exp [Exp]
- | SIfElse Exp [Exp] [Exp]
+   SIf Exp [Stm]
+ | SIfElse Exp [Stm] [Stm]
  | SJump Jump_stm
  | SExp Exp
   deriving (Eq,Ord,Show)
@@ -28,16 +27,16 @@ data Jump_stm =
 data Exp =
    ENone
  | EAsign CIdent Exp
- | EFunPar Exp [Exp]
- | EYield [Exp]
+ | EYield Exp
  | ETrue
  | EFalse
- | EFor CIdent Exp Exp [Exp]
- | EWhile Exp [Exp]
+ | EFor CIdent Exp Exp [Stm]
+ | EWhile Exp [Stm]
  | EFunDef FunDeclaration
  | EInt Integer
  | EString String
  | EIdent CIdent
+ | EFunPar Exp [Exp]
   deriving (Eq,Ord,Show)
 
 data FunDeclaration =

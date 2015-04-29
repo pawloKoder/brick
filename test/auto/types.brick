@@ -1,0 +1,9 @@
+[Def Main   
+    [Let none [None]]
+    [Let int 123]
+    [Let true [True]]
+    [Let false [False]]
+    [Let string "string"]
+    [Let string2 "string[][[()<>!@@%"]
+    [Let none [None]]
+]

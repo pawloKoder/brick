@@ -1,0 +1,8 @@
+[Def Main
+  [Let i 0]
+  [Let res
+    [While [Lt i 10]
+      [Yield i]
+    ]
+  ]
+]

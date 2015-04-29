@@ -1,0 +1,7 @@
+[Def Main
+  [Let res
+    [For i 1 10
+      [If [Le i 5] [Continue i]]
+    ]
+  ]
+]
