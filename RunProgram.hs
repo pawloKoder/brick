@@ -116,6 +116,7 @@ runProgram (Progr decls) = do
     case p of
         Left l -> return $ Left l
         Right (BVInt r) -> return $ Right r
+        Right BVNone -> return $ Right 0
         _ -> return $ Left "RTE: Main returned not Int value." -- TODO: Dodać wypisanie lewej wartości?
 
 
