@@ -6,16 +6,26 @@ import Control.Monad.State.Strict
 import Data.IORef
 
 import Absbrick
-import RunUtils 
+import RunUtils
 
 
 runVarDeclaration :: String -> BValue -> Exe ()
 runVarDeclaration name value = do
     modify $ \s -> s {eVar = ((name, value) : filter ((/= name).fst) (eVar s)) }
 
-    
+
 evalExpresion :: Exp -> Exe BValue
-evalExpresion = undefined
+evalExpresion ENone = return BVNone
+evalExpresion (EAsign ident exp) = undefined
+evalExpresion (EYield expr) = evalExpresion expr >>= return . BVYield
+evalExpresion ETrue = return $ BVBool True
+evalExpresion EFalse = return $ BVBool True
+evalExpresion (EFor iterator beginExpr endExpr stmts) = undefined
+evalExpresion (EWhile conditionExpr stmts) =  undefined
+evalExpresion (EInt value) = return $ BVInt value
+evalExpresion (EString value) = return $ BVString value
+evalExpresion (EIdent ident) = undefined
+evalExpresion (EFunPar name_expr params) = undefined
 
 
 runStatement :: Stm -> Exe BValue
@@ -43,9 +53,9 @@ yieldValue value = get >>= getYieldField
                 YSFunction -> throwError "RTE: Yield used outside loop."
                 YSLoop result -> liftIO $ modifyIORef result (value :)
                 YSKeepLooking -> maybe (throwError "RTE: Yield used outside loop.") getYieldField (eParent env)
-         
 
-  
+
+
 runStatements :: [Stm] -> Exe BValue
 runStatements stmts = do
     inEnvironment $ runStm stmts
@@ -59,37 +69,30 @@ runStatements stmts = do
                  BVBreak _ -> return result
                  BVYield value -> yieldValue value >> runStm t
                  _ -> runStm t
-  
-  
+
+
 runFunctionStatements :: [Stm] -> Exe BValue
 runFunctionStatements stmts = do
     result <- runStatements stmts
     return $ case result of
         BVReturn value -> value
         _ -> BVNone
-    
-  
+
+
 makeExeFunction :: [FunParam] -> [Stm] -> ExeFunction
 makeExeFunction params stmts = \values -> do
     let joinParams params values = zip (map (\(FunParam (CIdent s)) -> s) params) values
     inEnvironment $ mapM_ (uncurry runVarDeclaration) (joinParams params values) >> runFunctionStatements stmts
-  
-  
-runFunDeclaration :: FunDeclaration -> Exe ()
-runFunDeclaration (FunDec (CIdent name) params stmts) = do
-    current <- get
-    let fn = (name, makeExeFunction params stmts)
-    case lookup name (eFun current) of
-        Nothing -> do
-            warn $ "RTW: You are going to override existing function:" ++ name
-            put $ current {eFun = fn : (eFun current)}
-        Just fun -> do
-            put $ current {eFun = fn : filter ((/= name).fst) (eFun current)}
 
-     
+
+runFunDeclaration :: FunDeclaration -> Exe ()
+runFunDeclaration (FunDec (CIdent name) params stmts) =
+    setFunIntoEnv name (makeExeFunction params stmts)
+
+
 -- Przeleć liste i wykonuj runFunDeclaration
 -- Wykonaj to co jest pod Main bez parametrów
-runProgram :: Program -> IO (Either String Int)
+runProgram :: Program -> IO (Either String Integer)
 runProgram (Progr decls) = do
     let evalResult = inEnvironment $ mapM_ runFunDeclaration decls >> getFunFromEnv "Main" >>= \f -> f []
     p <- evalStateT (runErrorT evalResult) (Environment [] builtInFunctions YSFunction Nothing)
@@ -98,7 +101,7 @@ runProgram (Progr decls) = do
         Right (BVInt r) -> return $ Right r
         _ -> return $ Left "RTE: Main returned not Int value." -- TODO: Dodać wypisanie lewej wartości?
 
-      
+
 -- Wykonuje akcję w nowym środowisku na obecnym
 inEnvironment :: Exe a -> Exe a
 inEnvironment action = do

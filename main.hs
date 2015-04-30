@@ -22,7 +22,7 @@ showTree tree
       putStrLn $ "\n[Abstract Syntax]\n\n" ++ show tree
       putStrLn $ "\n[Linearized tree]\n\n" ++ printTree tree
 
-      
+
 main :: IO ()
 main = do
     args <- getArgs
@@ -38,5 +38,5 @@ main = do
                     case result of
                         Left s -> hPutStrLn stderr ("Program failed with: " ++ s) >> exitWith (ExitFailure 68)
                         Right 0 -> exitSuccess
-                        Right n -> exitWith $ ExitFailure n
+                        Right n -> exitWith $ ExitFailure $ fromIntegral n
         _ -> hPutStrLn stderr "Too many args" >> exitWith (ExitFailure 69)
