@@ -38,7 +38,24 @@ evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
                                             forLoop (current + 1) end ys
                                         _ -> forLoop (current + 1) end ys
                                 else liftIO $ (readIORef ys) >>= return.BVList
-evalExpresion (EWhile conditionExpr stmts) =  undefined
+evalExpresion (EWhile conditionExpr stmts) = do
+    ys <- liftIO $ newIORef []
+    inEnvironment $ do
+        modify $ \s-> s {eYieldStatus = YSLoop ys}
+        whileLoop ys
+    where whileLoop ys = do
+            cond <- evalExpresion conditionExpr >>= boolCast
+            if cond
+                then do
+                    res <- runFunctionStatements stmts
+                    case res of
+                        BVReturn _ -> return res
+                        BVBreak value -> return  value
+                        BVContinue value -> do
+                            liftIO $ modifyIORef ys (value:)
+                            whileLoop ys
+                        _ -> whileLoop ys
+                else liftIO $ (readIORef ys) >>= return.BVList
 evalExpresion (EInt value) = return $ BVInt value
 evalExpresion (EString value) = return $ BVString value
 evalExpresion (EIdent (CIdent ident)) = getVarFromEnv ident

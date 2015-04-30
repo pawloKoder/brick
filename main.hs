@@ -33,10 +33,10 @@ main = do
             case pProgram . myLexer $ source of
                 Bad s -> hPutStrLn stderr ("Parse failed: " ++ s) >> exitWith (ExitFailure 67)
                 Ok tree -> do
-                    let dump = showTree tree
+                    let dump = return () --showTree tree
                     result <- runProgram tree
                     case result of
-                        Left s -> hPutStrLn stderr ("Program failed with: " ++ s) >> dump >>exitWith (ExitFailure 68)
+                        Left s -> hPutStrLn stderr ("Program failed with: " ++ s) >> dump >> exitWith (ExitFailure 68)
                         Right 0 -> exitSuccess
                         Right n -> exitWith $ ExitFailure $ fromIntegral n
         _ -> hPutStrLn stderr "Too many args" >> exitWith (ExitFailure 69)
