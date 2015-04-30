@@ -50,7 +50,7 @@ Program : ListFunDeclaration { Progr (reverse $1) }
 Stm :: { Stm }
 Stm : '[' 'If' Exp ListStm ']' { SIf $3 (reverse $4) } 
   | '[' 'If' Exp ListStm ']' '[' 'Else' ListStm ']' { SIfElse $3 (reverse $4) (reverse $8) }
-  | Jump_stm { SJump $1 }
+  | JumpStm { SJump $1 }
   | Exp { SExp $1 }
 
 
@@ -59,8 +59,8 @@ ListStm : {- empty -} { [] }
   | ListStm Stm { flip (:) $1 $2 }
 
 
-Jump_stm :: { Jump_stm }
-Jump_stm : '[' 'Return' ']' { SjumpReturn } 
+JumpStm :: { JumpStm }
+JumpStm : '[' 'Return' ']' { SjumpReturn } 
   | '[' 'Return' Exp ']' { SjumpReturnV $3 }
   | '[' 'Break' ']' { SjumpBreak }
   | '[' 'Break' Exp ']' { SjumpBreakV $3 }

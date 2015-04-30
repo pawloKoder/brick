@@ -23,12 +23,12 @@ transStm :: Stm -> Result
 transStm x = case x of
   SIf exp stms  -> failure x
   SIfElse exp stms1 stms2  -> failure x
-  SJump jump_stm  -> failure x
+  SJump jumpstm  -> failure x
   SExp exp  -> failure x
 
 
-transJump_stm :: Jump_stm -> Result
-transJump_stm x = case x of
+transJumpStm :: JumpStm -> Result
+transJumpStm x = case x of
   SjumpReturn  -> failure x
   SjumpReturnV exp  -> failure x
   SjumpBreak  -> failure x

@@ -52,10 +52,32 @@ warn error = liftIO $ hPutStrLn stderr error
 runVarDeclaration :: String -> BValue -> Exe ()
 runVarDeclaration name value = do
     modify $ \s -> s {eVar = ((name, value) : filter ((/= name).fst) (eVar s)) }
-  
+
+    
+evalExpresion :: Exp -> Exe BValue
+evalExpresion = undefined
+
+
+boolCast :: BValue -> Exe Bool
+boolCast = undefined
+
 
 runStatement :: Stm -> Exe BValue
-runStatement stm = undefined
+runStatement (SIf cond ifStmts) = runStatement (SIfElse cond ifStmts [])
+runStatement (SIfElse cond ifStmts elseStmts) = evalExpresion cond >>= boolCast >>=
+    \value -> if value then  runStatements ifStmts else runStatements elseStmts
+runStatement (SJump jumpStm) = runJumpStatement jumpStm
+runStatement (SExp expr) = evalExpresion expr
+runStatement _ = throwError "RTE: Uniplemented feature yet."
+
+
+runJumpStatement :: JumpStm -> Exe BValue
+runJumpStatement SjumpReturn = return $ BVReturn BVNone
+runJumpStatement (SjumpReturnV expr) = evalExpresion expr >>= return . BVReturn
+runJumpStatement SjumpBreak = return $ BVBreak BVNone
+runJumpStatement (SjumpBreakV expr) = evalExpresion expr >>= return . BVBreak
+runJumpStatement SjumpContinue = return $ BVContinue BVNone
+runJumpStatement (SjumpContinueV expr) = evalExpresion expr >>= return . BVContinue
 
 
 yieldValue :: BValue -> Exe ()

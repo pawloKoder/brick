@@ -11,11 +11,11 @@ data Program =
 data Stm =
    SIf Exp [Stm]
  | SIfElse Exp [Stm] [Stm]
- | SJump Jump_stm
+ | SJump JumpStm
  | SExp Exp
   deriving (Eq,Ord,Show)
 
-data Jump_stm =
+data JumpStm =
    SjumpReturn
  | SjumpReturnV Exp
  | SjumpBreak

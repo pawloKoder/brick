@@ -8,17 +8,17 @@ token CIdent (letter (letter | digit | '_')*) ;
 
 SIf.           Stm ::= "[" "If" Exp [Stm] "]";
 SIfElse.       Stm ::= "[" "If" Exp [Stm] "]" "[" "Else" [Stm] "]" ;
-SJump.         Stm ::= Jump_stm ;
+SJump.         Stm ::= JumpStm ;
 SExp.          Stm ::= Exp ;
 
 separator Stm "" ;
 
-SjumpReturn.      Jump_stm ::= "[" "Return" "]" ;
-SjumpReturnV.     Jump_stm ::= "[" "Return" Exp "]" ;
-SjumpBreak.       Jump_stm ::= "[" "Break" "]" ;
-SjumpBreakV.      Jump_stm ::= "[" "Break" Exp "]" ;
-SjumpContinue.    Jump_stm ::= "[" "Continue" "]";
-SjumpContinueV.   Jump_stm ::= "[" "Continue" Exp "]" ;
+SjumpReturn.      JumpStm ::= "[" "Return" "]" ;
+SjumpReturnV.     JumpStm ::= "[" "Return" Exp "]" ;
+SjumpBreak.       JumpStm ::= "[" "Break" "]" ;
+SjumpBreakV.      JumpStm ::= "[" "Break" Exp "]" ;
+SjumpContinue.    JumpStm ::= "[" "Continue" "]";
+SjumpContinueV.   JumpStm ::= "[" "Continue" Exp "]" ;
 
 ENone.          Exp ::= "[" "]";
 EAsign.         Exp ::= "[" "Let" CIdent Exp "]";

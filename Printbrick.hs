@@ -93,14 +93,14 @@ instance Print Stm where
   prt i e = case e of
    SIf exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 stms , doc (showString "]")])
    SIfElse exp stms0 stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 stms0 , doc (showString "]") , doc (showString "[") , doc (showString "Else") , prt 0 stms , doc (showString "]")])
-   SJump jump_stm -> prPrec i 0 (concatD [prt 0 jump_stm])
+   SJump jumpstm -> prPrec i 0 (concatD [prt 0 jumpstm])
    SExp exp -> prPrec i 0 (concatD [prt 0 exp])
 
   prtList es = case es of
    [] -> (concatD [])
    x:xs -> (concatD [prt 0 x , prt 0 xs])
 
-instance Print Jump_stm where
+instance Print JumpStm where
   prt i e = case e of
    SjumpReturn  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Return") , doc (showString "]")])
    SjumpReturnV exp -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Return") , prt 0 exp , doc (showString "]")])
