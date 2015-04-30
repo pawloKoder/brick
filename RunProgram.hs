@@ -1,52 +1,12 @@
 module RunProgram (runProgram) where
 
-import System.IO ( stderr, hPutStrLn )
-import Absbrick
 import BuiltInFunctions
 import Control.Monad.Error
 import Control.Monad.State.Strict
 import Data.IORef
 
-type Exe = ErrorT String (StateT Environment IO)
-type ExeFunction = [BValue] -> Exe BValue
-
-data YeldStatus
-    = YSFunction
-    | YSKeepLooking -- Jesteś gdzieś głębiej w pętli
-    | YSLoop (IORef [BValue])
-    
-
-data Environment = Environment 
-    { eVar :: [(String, BValue)]
-    , eFun :: [(String, ExeFunction)]
-    , eYieldStatus :: YeldStatus
-    , eParent :: Maybe Environment
-    }
-
-{-data BType 
-    = BTNone
-    | BTInt
-    | BTBool
-    | BTString
-    | BTList
-    | BTDict-}
-    
-data BValue
-    = BVNone
-    | BVInt Int
-    | BVBool Bool
-    | BVString String
-    | BVList [BValue]
-    | BVDict [(BValue, BValue)]
-    | BVReturn BValue
-    | BVBreak BValue
-    | BVContinue BValue
-    | BVYield BValue
-
-   
-
-warn :: String -> Exe ()
-warn error = liftIO $ hPutStrLn stderr error
+import Absbrick
+import RunUtils 
 
 
 runVarDeclaration :: String -> BValue -> Exe ()
@@ -56,10 +16,6 @@ runVarDeclaration name value = do
     
 evalExpresion :: Exp -> Exe BValue
 evalExpresion = undefined
-
-
-boolCast :: BValue -> Exe Bool
-boolCast = undefined
 
 
 runStatement :: Stm -> Exe BValue
@@ -151,12 +107,4 @@ inEnvironment action = do
     result <- action
     put current
     return result
-    
-    
-getFunFromEnv :: String -> Exe ExeFunction
-getFunFromEnv name = do
-    currentEnv <- get
-    maybe (throwError $ "RTE: Cannot find function " ++ name ++ " in the scope.") return (getIt currentEnv) 
-    where getIt env = case lookup name (eFun env) of
-                          Just fun -> Just fun
-                          Nothing -> eParent env >>= getIt
+
