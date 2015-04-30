@@ -1,6 +1,7 @@
 module RunProgram (runProgram) where
 
 import BuiltInFunctions
+import Control.Monad
 import Control.Monad.Error
 import Control.Monad.State.Strict
 import Data.IORef
@@ -16,7 +17,9 @@ runVarDeclaration name value = do
 
 evalExpresion :: Exp -> Exe BValue
 evalExpresion ENone = return BVNone
-evalExpresion (EAsign ident exp) = undefined
+evalExpresion (EAsign (CIdent ident) expr) = do
+    value <- evalExpresion expr
+    setVarIntoEnv ident value >> return value
 evalExpresion (EYield expr) = evalExpresion expr >>= return . BVYield
 evalExpresion ETrue = return $ BVBool True
 evalExpresion EFalse = return $ BVBool True
@@ -24,8 +27,22 @@ evalExpresion (EFor iterator beginExpr endExpr stmts) = undefined
 evalExpresion (EWhile conditionExpr stmts) =  undefined
 evalExpresion (EInt value) = return $ BVInt value
 evalExpresion (EString value) = return $ BVString value
-evalExpresion (EIdent ident) = undefined
-evalExpresion (EFunPar name_expr params) = undefined
+evalExpresion (EIdent (CIdent ident)) = getVarFromEnv ident
+evalExpresion (EFunPar nameExpr params) = do
+    case nameExpr of
+        EIdent (CIdent ident) -> do
+            paramValues <- mapM evalExpresion params
+            getFunFromEnv ident >>= \f-> f paramValues
+        _ -> do
+            nameValue <- evalExpresion nameExpr
+            case nameValue of
+                 BVBool condition -> do
+                    when condition $ mapM_ evalExpresion params
+                    return BVNone
+                 BVString name -> do
+                    paramValues <- mapM evalExpresion params
+                    getFunFromEnv name >>= \f-> f paramValues
+                 _ -> throwError "RTE: You are trying to call sth not callable."
 
 
 runStatement :: Stm -> Exe BValue
