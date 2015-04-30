@@ -43,6 +43,11 @@ boolCast (BVInt value) = warn "RTW: Casting from Int to Bool" >> return (value /
 boolCast _ = throwError "RTE: Casting error"
 
 
+integerCast :: BValue -> Exe Integer
+integerCast (BVInt value) = return value
+integerCast _ = throwError "RTE: Casting error"
+
+
 warn :: String -> Exe ()
 warn error = liftIO $ hPutStrLn stderr error
 
@@ -82,6 +87,12 @@ setFunIntoEnv = setIntoEnv eFun updateFunEnv where
     updateFunEnv record value obj = obj {eFun = value : record}
 
 
+-- Inserts or update var.
 setVarIntoEnv :: String -> BValue -> Exe ()
 setVarIntoEnv = setIntoEnv eVar updateVarEnv where
     updateVarEnv record value obj = obj {eVar = value : record}
+
+
+insertVarIntoEnv :: String -> BValue -> Exe ()
+insertVarIntoEnv name value = do
+    modify $ \s -> s {eVar = ((name, value) : filter ((/= name).fst) (eVar s)) }

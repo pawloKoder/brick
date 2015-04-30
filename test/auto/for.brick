@@ -1,6 +1,7 @@
 [Def Main
   [Let i 0]
-  [For i 1 10
-     [Let i [Add i 1]]
+  [For a 1 10
+     [Let i [Add i a]]
   ]
+  [If [Not [Eq i 55]] [Return -1]]
 ]

@@ -10,11 +10,6 @@ import Absbrick
 import RunUtils
 
 
-runVarDeclaration :: String -> BValue -> Exe ()
-runVarDeclaration name value = do
-    modify $ \s -> s {eVar = ((name, value) : filter ((/= name).fst) (eVar s)) }
-
-
 evalExpresion :: Exp -> Exe BValue
 evalExpresion ENone = return BVNone
 evalExpresion (EAsign (CIdent ident) expr) = do
@@ -23,7 +18,26 @@ evalExpresion (EAsign (CIdent ident) expr) = do
 evalExpresion (EYield expr) = evalExpresion expr >>= return . BVYield
 evalExpresion ETrue = return $ BVBool True
 evalExpresion EFalse = return $ BVBool True
-evalExpresion (EFor iterator beginExpr endExpr stmts) = undefined
+evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
+    begin <- evalExpresion beginExpr >>= integerCast
+    end <- evalExpresion endExpr >>= integerCast
+    ys <- liftIO $ newIORef []
+    inEnvironment $ do
+        modify $ \s-> s {eYieldStatus = YSLoop ys}
+        insertVarIntoEnv ident (BVInt begin)
+        forLoop begin end ys
+    where forLoop current end ys = if current < end
+                                then do
+                                    setVarIntoEnv ident (BVInt current)
+                                    res <- runFunctionStatements stmts
+                                    case res of
+                                        BVReturn _ -> return res
+                                        BVBreak value -> return  value
+                                        BVContinue value -> do
+                                            liftIO $ modifyIORef ys (value:)
+                                            forLoop (current + 1) end ys
+                                        _ -> forLoop (current + 1) end ys
+                                else liftIO $ (readIORef ys) >>= return.BVList
 evalExpresion (EWhile conditionExpr stmts) =  undefined
 evalExpresion (EInt value) = return $ BVInt value
 evalExpresion (EString value) = return $ BVString value
@@ -99,7 +113,7 @@ runFunctionStatements stmts = do
 makeExeFunction :: [FunParam] -> [Stm] -> ExeFunction
 makeExeFunction params stmts = \values -> do
     let joinParams params values = zip (map (\(FunParam (CIdent s)) -> s) params) values
-    inEnvironment $ mapM_ (uncurry runVarDeclaration) (joinParams params values) >> runFunctionStatements stmts
+    inEnvironment $ mapM_ (uncurry insertVarIntoEnv) (joinParams params values) >> runFunctionStatements stmts
 
 
 runFunDeclaration :: FunDeclaration -> Exe ()
