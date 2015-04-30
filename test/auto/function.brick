@@ -1,3 +1,5 @@
+[Def test1 @a]
+[Def test2]
 [Def Main
    [Def test1]
    [Def test2]

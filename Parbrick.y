@@ -15,20 +15,21 @@ import ErrM
 %tokentype { Token }
 
 %token 
- 'Break' { PT _ (TS _ 1) }
- 'Continue' { PT _ (TS _ 2) }
- 'Def' { PT _ (TS _ 3) }
- 'Else' { PT _ (TS _ 4) }
- 'False' { PT _ (TS _ 5) }
- 'For' { PT _ (TS _ 6) }
- 'If' { PT _ (TS _ 7) }
- 'Let' { PT _ (TS _ 8) }
- 'Return' { PT _ (TS _ 9) }
- 'True' { PT _ (TS _ 10) }
- 'While' { PT _ (TS _ 11) }
- 'Yield' { PT _ (TS _ 12) }
- '[' { PT _ (TS _ 13) }
- ']' { PT _ (TS _ 14) }
+ '@' { PT _ (TS _ 1) }
+ 'Break' { PT _ (TS _ 2) }
+ 'Continue' { PT _ (TS _ 3) }
+ 'Def' { PT _ (TS _ 4) }
+ 'Else' { PT _ (TS _ 5) }
+ 'False' { PT _ (TS _ 6) }
+ 'For' { PT _ (TS _ 7) }
+ 'If' { PT _ (TS _ 8) }
+ 'Let' { PT _ (TS _ 9) }
+ 'Return' { PT _ (TS _ 10) }
+ 'True' { PT _ (TS _ 11) }
+ 'While' { PT _ (TS _ 12) }
+ 'Yield' { PT _ (TS _ 13) }
+ '[' { PT _ (TS _ 14) }
+ ']' { PT _ (TS _ 15) }
 
 L_integ  { PT _ (TI $$) }
 L_quoted { PT _ (TL $$) }
@@ -87,8 +88,17 @@ ListExp : {- empty -} { [] }
   | ListExp Exp { flip (:) $1 $2 }
 
 
+FunParam :: { FunParam }
+FunParam : '@' CIdent { FunParam $2 } 
+
+
+ListFunParam :: { [FunParam] }
+ListFunParam : {- empty -} { [] } 
+  | ListFunParam FunParam { flip (:) $1 $2 }
+
+
 FunDeclaration :: { FunDeclaration }
-FunDeclaration : '[' 'Def' CIdent ListStm ']' { FunDec $3 (reverse $4) } 
+FunDeclaration : '[' 'Def' CIdent ListFunParam ListStm ']' { FunDec $3 (reverse $4) (reverse $5) } 
 
 
 ListFunDeclaration :: { [FunDeclaration] }

@@ -53,9 +53,14 @@ transExp x = case x of
   EFunPar exp exps  -> failure x
 
 
+transFunParam :: FunParam -> Result
+transFunParam x = case x of
+  FunParam cident  -> failure x
+
+
 transFunDeclaration :: FunDeclaration -> Result
 transFunDeclaration x = case x of
-  FunDec cident stms  -> failure x
+  FunDec cident funparams stms  -> failure x
 
 
 

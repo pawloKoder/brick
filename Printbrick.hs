@@ -129,9 +129,17 @@ instance Print Exp where
    [] -> (concatD [])
    x:xs -> (concatD [prt 0 x , prt 0 xs])
 
+instance Print FunParam where
+  prt i e = case e of
+   FunParam cident -> prPrec i 0 (concatD [doc (showString "@") , prt 0 cident])
+
+  prtList es = case es of
+   [] -> (concatD [])
+   x:xs -> (concatD [prt 0 x , prt 0 xs])
+
 instance Print FunDeclaration where
   prt i e = case e of
-   FunDec cident stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Def") , prt 0 cident , prt 0 stms , doc (showString "]")])
+   FunDec cident funparams stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Def") , prt 0 cident , prt 0 funparams , prt 0 stms , doc (showString "]")])
 
   prtList es = case es of
    [] -> (concatD [])

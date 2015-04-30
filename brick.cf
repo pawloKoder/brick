@@ -35,5 +35,7 @@ EFunPar.        Exp ::= "[" Exp [Exp] "]" ;
 
 separator Exp "" ;
 
-FunDec. FunDeclaration ::= "[" "Def" CIdent [Stm] "]";
+FunParam. FunParam ::= "@" CIdent ;
+separator FunParam "" ;
+FunDec. FunDeclaration ::= "[" "Def" CIdent [FunParam] [Stm] "]";
 separator FunDeclaration "" ;

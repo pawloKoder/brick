@@ -39,7 +39,11 @@ data Exp =
  | EFunPar Exp [Exp]
   deriving (Eq,Ord,Show)
 
+data FunParam =
+   FunParam CIdent
+  deriving (Eq,Ord,Show)
+
 data FunDeclaration =
-   FunDec CIdent [Stm]
+   FunDec CIdent [FunParam] [Stm]
   deriving (Eq,Ord,Show)
 

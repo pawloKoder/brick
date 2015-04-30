@@ -53,7 +53,7 @@ The reserved words used in brick are the following: \\
 The symbols used in brick are the following: \\
 
 \begin{tabular}{lll}
-{\symb{[}} &{\symb{]}} & \\
+{\symb{[}} &{\symb{]}} &{\symb{@}} \\
 \end{tabular}\\
 
 \subsection*{Comments}
@@ -111,7 +111,16 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{FunDeclaration}} & {\arrow}  &{\terminal{[}} {\terminal{Def}} {\nonterminal{CIdent}} {\nonterminal{ListStm}} {\terminal{]}}  \\
+{\nonterminal{FunParam}} & {\arrow}  &{\terminal{@}} {\nonterminal{CIdent}}  \\
+\end{tabular}\\
+
+\begin{tabular}{lll}
+{\nonterminal{ListFunParam}} & {\arrow}  &{\emptyP} \\
+ & {\delimit}  &{\nonterminal{FunParam}} {\nonterminal{ListFunParam}}  \\
+\end{tabular}\\
+
+\begin{tabular}{lll}
+{\nonterminal{FunDeclaration}} & {\arrow}  &{\terminal{[}} {\terminal{Def}} {\nonterminal{CIdent}} {\nonterminal{ListFunParam}} {\nonterminal{ListStm}} {\terminal{]}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}

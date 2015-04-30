@@ -11,7 +11,10 @@ import Skelbrick
 import Printbrick
 import Absbrick
 
+import RunProgram
+
 import ErrM
+
 
 showTree :: (Show a, Print a) => a -> IO ()
 showTree tree
@@ -19,7 +22,6 @@ showTree tree
       putStrLn $ "\n[Abstract Syntax]\n\n" ++ show tree
       putStrLn $ "\n[Linearized tree]\n\n" ++ printTree tree
 
-runProgram tree = return $ Left "LOL"
       
 main :: IO ()
 main = do
@@ -31,7 +33,7 @@ main = do
             case pProgram . myLexer $ source of
                 Bad s -> hPutStrLn stderr ("Parse failed: " ++ s) >> exitWith (ExitFailure 67)
                 Ok tree -> do
-                    -- showTree tree
+                    showTree tree
                     result <- runProgram tree
                     case result of
                         Left s -> hPutStrLn stderr ("Program failed with: " ++ s) >> exitWith (ExitFailure 68)
