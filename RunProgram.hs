@@ -30,12 +30,36 @@ data BValue
     | BVString String
     | BVList [IORef BValue]
     | BVDict [(BValue, IORef BValue)]
-    
+   
+
+warn :: String -> Exe ()
+warn error = undefined
+
+
+runVarDeclaration :: String -> BValue -> Exe ()
+runVarDeclaration name value = undefined
+
+
+runStatemets :: [Stm] -> Exe BValue
+runStatemets stmts = undefined
+
+  
+makeExeFunction :: [FunParam] -> [Stm] -> ExeFunction
+makeExeFunction params stmts = \values -> do
+    let joinParams params values = zip (map (\(FunParam (CIdent s)) -> s) params) values
+    inEnvironment $ mapM_ (uncurry runVarDeclaration) (joinParams params values) >> runStatemets stmts
   
   
 runFunDeclaration :: FunDeclaration -> Exe ()
-runFunDeclaration (FunDec ident params stmts) =
-     undefined
+runFunDeclaration (FunDec (CIdent name) params stmts) = do
+    current <- get
+    let fn = (name, makeExeFunction params stmts)
+    case lookup name (eFun current) of
+        Nothing -> do
+            warn $ "RTW: You are going to override existing function:" ++ name
+            put $ current {eFun = fn : (eFun current)}
+        Just fun -> do
+            put $ current {eFun = fn : filter ((/= name).fst) (eFun current)}
 
      
 -- Przeleć liste i wykonuj runFunDeclaration
