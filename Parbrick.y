@@ -15,21 +15,22 @@ import ErrM
 %tokentype { Token }
 
 %token 
- '@' { PT _ (TS _ 1) }
- 'Break' { PT _ (TS _ 2) }
- 'Continue' { PT _ (TS _ 3) }
- 'Def' { PT _ (TS _ 4) }
- 'Else' { PT _ (TS _ 5) }
- 'False' { PT _ (TS _ 6) }
- 'For' { PT _ (TS _ 7) }
- 'If' { PT _ (TS _ 8) }
- 'Let' { PT _ (TS _ 9) }
- 'Return' { PT _ (TS _ 10) }
- 'True' { PT _ (TS _ 11) }
- 'While' { PT _ (TS _ 12) }
- 'Yield' { PT _ (TS _ 13) }
- '[' { PT _ (TS _ 14) }
- ']' { PT _ (TS _ 15) }
+ '-' { PT _ (TS _ 1) }
+ '@' { PT _ (TS _ 2) }
+ 'Break' { PT _ (TS _ 3) }
+ 'Continue' { PT _ (TS _ 4) }
+ 'Def' { PT _ (TS _ 5) }
+ 'Else' { PT _ (TS _ 6) }
+ 'False' { PT _ (TS _ 7) }
+ 'For' { PT _ (TS _ 8) }
+ 'If' { PT _ (TS _ 9) }
+ 'Let' { PT _ (TS _ 10) }
+ 'Return' { PT _ (TS _ 11) }
+ 'True' { PT _ (TS _ 12) }
+ 'While' { PT _ (TS _ 13) }
+ 'Yield' { PT _ (TS _ 14) }
+ '[' { PT _ (TS _ 15) }
+ ']' { PT _ (TS _ 16) }
 
 L_integ  { PT _ (TI $$) }
 L_quoted { PT _ (TL $$) }
@@ -78,6 +79,7 @@ Exp : '[' ']' { ENone }
   | '[' 'For' CIdent Exp Exp ListStm ']' { EFor $3 $4 $5 (reverse $6) }
   | '[' 'While' Exp ListStm ']' { EWhile $3 (reverse $4) }
   | Integer { EInt $1 }
+  | '-' Integer { ENegInt $2 }
   | String { EString $1 }
   | CIdent { EIdent $1 }
   | '[' Exp ListExp ']' { EFunPar $2 (reverse $3) }

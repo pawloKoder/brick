@@ -48,6 +48,7 @@ transExp x = case x of
   EFor cident exp1 exp2 stms3  -> failure x
   EWhile exp stms  -> failure x
   EInt n  -> failure x
+  ENegInt n  -> failure x
   EString str  -> failure x
   EIdent cident  -> failure x
   EFunPar exp exps  -> failure x

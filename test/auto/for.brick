@@ -3,5 +3,5 @@
   [For a 1 10
      [Let i [Add i a]]
   ]
-  [If [Not [Eq i 55]] [Return 1]]
+  [If [Not [Eq i 55]] [Return -1]]
 ]

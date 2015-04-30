@@ -34,6 +34,7 @@ data Exp =
  | EFor CIdent Exp Exp [Stm]
  | EWhile Exp [Stm]
  | EInt Integer
+ | ENegInt Integer
  | EString String
  | EIdent CIdent
  | EFunPar Exp [Exp]

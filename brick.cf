@@ -29,6 +29,7 @@ EFalse.         Exp ::= "[" "False" "]" ;
 EFor.           Exp ::= "[" "For" CIdent Exp Exp [Stm] "]" ;
 EWhile.         Exp ::= "[" "While" Exp [Stm] "]" ;
 EInt.           Exp ::= Integer ;
+ENegInt.        Exp ::= "-" Integer ;
 EString.        Exp ::= String ;
 EIdent.         Exp ::= CIdent ;
 EFunPar.        Exp ::= "[" Exp [Exp] "]" ;

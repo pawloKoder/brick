@@ -121,6 +121,7 @@ instance Print Exp where
    EFor cident exp0 exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "For") , prt 0 cident , prt 0 exp0 , prt 0 exp , prt 0 stms , doc (showString "]")])
    EWhile exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "While") , prt 0 exp , prt 0 stms , doc (showString "]")])
    EInt n -> prPrec i 0 (concatD [prt 0 n])
+   ENegInt n -> prPrec i 0 (concatD [doc (showString "-") , prt 0 n])
    EString str -> prPrec i 0 (concatD [prt 0 str])
    EIdent cident -> prPrec i 0 (concatD [prt 0 cident])
    EFunPar exp exps -> prPrec i 0 (concatD [doc (showString "[") , prt 0 exp , prt 0 exps , doc (showString "]")])

@@ -57,6 +57,7 @@ evalExpresion (EWhile conditionExpr stmts) = do
                         _ -> whileLoop ys
                 else liftIO $ (readIORef ys) >>= return.BVList
 evalExpresion (EInt value) = return $ BVInt value
+evalExpresion (ENegInt value) = return $ BVInt (0-value)
 evalExpresion (EString value) = return $ BVString value
 evalExpresion (EIdent (CIdent ident)) = getVarFromEnv ident
 evalExpresion (EFunPar nameExpr params) = do
