@@ -1,5 +1,6 @@
 module RunProgram (runProgram) where
 
+import System.IO ( stderr, hPutStrLn )
 import Absbrick
 import BuiltInFunctions
 import Control.Monad.Error
@@ -33,7 +34,7 @@ data BValue
    
 
 warn :: String -> Exe ()
-warn error = undefined
+warn error = liftIO $ hPutStrLn stderr error
 
 
 runVarDeclaration :: String -> BValue -> Exe ()
