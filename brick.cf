@@ -10,6 +10,7 @@ SIf.           Stm ::= "[" "If" Exp [Stm] "]";
 SIfElse.       Stm ::= "[" "If" Exp [Stm] "]" "[" "Else" [Stm] "]" ;
 SJump.         Stm ::= JumpStm ;
 SExp.          Stm ::= Exp ;
+SFunDef.       Stm ::= FunDeclaration ;
 
 separator Stm "" ;
 
@@ -27,7 +28,6 @@ ETrue.          Exp ::= "[" "True" "]" ;
 EFalse.         Exp ::= "[" "False" "]" ;
 EFor.           Exp ::= "[" "For" CIdent Exp Exp [Stm] "]" ;
 EWhile.         Exp ::= "[" "While" Exp [Stm] "]" ;
-EFunDef.        Exp ::= FunDeclaration ;
 EInt.           Exp ::= Integer ;
 EString.        Exp ::= String ;
 EIdent.         Exp ::= CIdent ;

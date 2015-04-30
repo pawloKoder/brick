@@ -13,6 +13,7 @@ data Stm =
  | SIfElse Exp [Stm] [Stm]
  | SJump JumpStm
  | SExp Exp
+ | SFunDef FunDeclaration
   deriving (Eq,Ord,Show)
 
 data JumpStm =
@@ -32,7 +33,6 @@ data Exp =
  | EFalse
  | EFor CIdent Exp Exp [Stm]
  | EWhile Exp [Stm]
- | EFunDef FunDeclaration
  | EInt Integer
  | EString String
  | EIdent CIdent

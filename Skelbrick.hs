@@ -25,6 +25,7 @@ transStm x = case x of
   SIfElse exp stms1 stms2  -> failure x
   SJump jumpstm  -> failure x
   SExp exp  -> failure x
+  SFunDef fundeclaration  -> failure x
 
 
 transJumpStm :: JumpStm -> Result
@@ -46,7 +47,6 @@ transExp x = case x of
   EFalse  -> failure x
   EFor cident exp1 exp2 stms3  -> failure x
   EWhile exp stms  -> failure x
-  EFunDef fundeclaration  -> failure x
   EInt n  -> failure x
   EString str  -> failure x
   EIdent cident  -> failure x

@@ -68,7 +68,7 @@ runStatement (SIfElse cond ifStmts elseStmts) = evalExpresion cond >>= boolCast 
     \value -> if value then  runStatements ifStmts else runStatements elseStmts
 runStatement (SJump jumpStm) = runJumpStatement jumpStm
 runStatement (SExp expr) = evalExpresion expr
-runStatement _ = throwError "RTE: Uniplemented feature yet."
+runStatement (SFunDef def) = runFunDeclaration def >> return BVNone
 
 
 runJumpStatement :: JumpStm -> Exe BValue

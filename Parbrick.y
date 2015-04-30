@@ -52,6 +52,7 @@ Stm : '[' 'If' Exp ListStm ']' { SIf $3 (reverse $4) }
   | '[' 'If' Exp ListStm ']' '[' 'Else' ListStm ']' { SIfElse $3 (reverse $4) (reverse $8) }
   | JumpStm { SJump $1 }
   | Exp { SExp $1 }
+  | FunDeclaration { SFunDef $1 }
 
 
 ListStm :: { [Stm] }
@@ -76,7 +77,6 @@ Exp : '[' ']' { ENone }
   | '[' 'False' ']' { EFalse }
   | '[' 'For' CIdent Exp Exp ListStm ']' { EFor $3 $4 $5 (reverse $6) }
   | '[' 'While' Exp ListStm ']' { EWhile $3 (reverse $4) }
-  | FunDeclaration { EFunDef $1 }
   | Integer { EInt $1 }
   | String { EString $1 }
   | CIdent { EIdent $1 }

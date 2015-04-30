@@ -95,6 +95,7 @@ instance Print Stm where
    SIfElse exp stms0 stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 stms0 , doc (showString "]") , doc (showString "[") , doc (showString "Else") , prt 0 stms , doc (showString "]")])
    SJump jumpstm -> prPrec i 0 (concatD [prt 0 jumpstm])
    SExp exp -> prPrec i 0 (concatD [prt 0 exp])
+   SFunDef fundeclaration -> prPrec i 0 (concatD [prt 0 fundeclaration])
 
   prtList es = case es of
    [] -> (concatD [])
@@ -119,7 +120,6 @@ instance Print Exp where
    EFalse  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "False") , doc (showString "]")])
    EFor cident exp0 exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "For") , prt 0 cident , prt 0 exp0 , prt 0 exp , prt 0 stms , doc (showString "]")])
    EWhile exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "While") , prt 0 exp , prt 0 stms , doc (showString "]")])
-   EFunDef fundeclaration -> prPrec i 0 (concatD [prt 0 fundeclaration])
    EInt n -> prPrec i 0 (concatD [prt 0 n])
    EString str -> prPrec i 0 (concatD [prt 0 str])
    EIdent cident -> prPrec i 0 (concatD [prt 0 cident])
