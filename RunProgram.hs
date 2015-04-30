@@ -10,9 +10,16 @@ import Data.IORef
 type Exe = ErrorT String (StateT Environment IO)
 type ExeFunction = [BValue] -> Exe BValue
 
+data YeldStatus
+    = YSFunction
+    | YSKeepLooking -- Jesteś gdzieś głębiej w pętli
+    | YSLoop (IORef [BValue])
+    
+
 data Environment = Environment 
-    { eVar :: [(String, IORef BValue)]
+    { eVar :: [(String, BValue)]
     , eFun :: [(String, ExeFunction)]
+    , eYieldStatus :: YeldStatus
     , eParent :: Maybe Environment
     }
 
@@ -29,8 +36,13 @@ data BValue
     | BVInt Int
     | BVBool Bool
     | BVString String
-    | BVList [IORef BValue]
-    | BVDict [(BValue, IORef BValue)]
+    | BVList [BValue]
+    | BVDict [(BValue, BValue)]
+    | BVReturn BValue
+    | BVBreak BValue
+    | BVContinue BValue
+    | BVYield BValue
+
    
 
 warn :: String -> Exe ()
@@ -38,17 +50,51 @@ warn error = liftIO $ hPutStrLn stderr error
 
 
 runVarDeclaration :: String -> BValue -> Exe ()
-runVarDeclaration name value = undefined
+runVarDeclaration name value = do
+    modify $ \s -> s {eVar = ((name, value) : filter ((/= name).fst) (eVar s)) }
+  
+
+runStatement :: Stm -> Exe BValue
+runStatement stm = undefined
 
 
-runStatemets :: [Stm] -> Exe BValue
-runStatemets stmts = undefined
+yieldValue :: BValue -> Exe ()
+yieldValue value = get >>= getYieldField
+    where getYieldField env =
+            case eYieldStatus env of
+                YSFunction -> throwError "RTE: Yield used outside loop."
+                YSLoop result -> liftIO $ modifyIORef result (value :)
+                YSKeepLooking -> maybe (throwError "RTE: Yield used outside loop.") getYieldField (eParent env)
+         
 
+  
+runStatements :: [Stm] -> Exe BValue
+runStatements stmts = do
+    inEnvironment $ runStm stmts
+    where
+        runStm [] = return BVNone
+        runStm (h:t) = do
+            result <- runStatement h
+            case result of
+                 BVReturn _ -> return result
+                 BVContinue _ -> return result
+                 BVBreak _ -> return result
+                 BVYield value -> yieldValue value >> runStm t
+                 _ -> runStm t
+  
+  
+runFunctionStatements :: [Stm] -> Exe BValue
+runFunctionStatements stmts = do
+    result <- runStatements stmts
+    return $ case result of
+        BVReturn value -> value
+        _ -> BVNone
+    
   
 makeExeFunction :: [FunParam] -> [Stm] -> ExeFunction
 makeExeFunction params stmts = \values -> do
     let joinParams params values = zip (map (\(FunParam (CIdent s)) -> s) params) values
-    inEnvironment $ mapM_ (uncurry runVarDeclaration) (joinParams params values) >> runStatemets stmts
+    inEnvironment $ mapM_ (uncurry runVarDeclaration) (joinParams params values) >> runFunctionStatements stmts
   
   
 runFunDeclaration :: FunDeclaration -> Exe ()
@@ -68,7 +114,7 @@ runFunDeclaration (FunDec (CIdent name) params stmts) = do
 runProgram :: Program -> IO (Either String Int)
 runProgram (Progr decls) = do
     let evalResult = inEnvironment $ mapM_ runFunDeclaration decls >> getFunFromEnv "Main" >>= \f -> f []
-    p <- evalStateT (runErrorT evalResult) (Environment [] builtInFunctions Nothing)
+    p <- evalStateT (runErrorT evalResult) (Environment [] builtInFunctions YSFunction Nothing)
     case p of
         Left l -> return $ Left l
         Right (BVInt r) -> return $ Right r
@@ -79,7 +125,7 @@ runProgram (Progr decls) = do
 inEnvironment :: Exe a -> Exe a
 inEnvironment action = do
     current <- get
-    put $ Environment [] [] (Just current)
+    put $ Environment [] [] YSKeepLooking (Just current)
     result <- action
     put current
     return result
