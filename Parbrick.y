@@ -25,13 +25,14 @@ import ErrM
  'For' { PT _ (TS _ 8) }
  'If' { PT _ (TS _ 9) }
  'Let' { PT _ (TS _ 10) }
- 'Return' { PT _ (TS _ 11) }
- 'True' { PT _ (TS _ 12) }
- 'While' { PT _ (TS _ 13) }
- 'Yield' { PT _ (TS _ 14) }
- '[' { PT _ (TS _ 15) }
- ']' { PT _ (TS _ 16) }
- '|' { PT _ (TS _ 17) }
+ 'None' { PT _ (TS _ 11) }
+ 'Return' { PT _ (TS _ 12) }
+ 'True' { PT _ (TS _ 13) }
+ 'While' { PT _ (TS _ 14) }
+ 'Yield' { PT _ (TS _ 15) }
+ '[' { PT _ (TS _ 16) }
+ ']' { PT _ (TS _ 17) }
+ '|' { PT _ (TS _ 18) }
 
 L_integ  { PT _ (TI $$) }
 L_quoted { PT _ (TL $$) }
@@ -73,6 +74,7 @@ JumpStm : '[' 'Return' ']' { SjumpReturn }
 
 Exp :: { Exp }
 Exp : '[' ']' { ENone } 
+  | '[' 'None' ListStm ']' { EFunNone (reverse $3) }
   | '[' 'Let' CIdent Exp ']' { EAsign $3 $4 }
   | '[' 'Yield' Exp ']' { EYield $3 }
   | '[' 'True' ']' { ETrue }

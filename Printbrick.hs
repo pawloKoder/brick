@@ -114,6 +114,7 @@ instance Print JumpStm where
 instance Print Exp where
   prt i e = case e of
    ENone  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "]")])
+   EFunNone stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "None") , prt 0 stms , doc (showString "]")])
    EAsign cident exp -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Let") , prt 0 cident , prt 0 exp , doc (showString "]")])
    EYield exp -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Yield") , prt 0 exp , doc (showString "]")])
    ETrue  -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "True") , doc (showString "]")])

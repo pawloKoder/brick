@@ -22,6 +22,7 @@ SjumpContinue.    JumpStm ::= "[" "Continue" "]";
 SjumpContinueV.   JumpStm ::= "[" "Continue" Exp "]" ;
 
 ENone.          Exp ::= "[" "]";
+EFunNone.       Exp ::= "[" "None" [Stm] "]";
 EAsign.         Exp ::= "[" "Let" CIdent Exp "]";
 EYield.         Exp ::= "[" "Yield" Exp "]" ;
 ETrue.          Exp ::= "[" "True" "]" ;

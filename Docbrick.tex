@@ -46,8 +46,9 @@ The reserved words used in brick are the following: \\
 \begin{tabular}{lll}
 {\reserved{Break}} &{\reserved{Continue}} &{\reserved{Def}} \\
 {\reserved{Else}} &{\reserved{False}} &{\reserved{For}} \\
-{\reserved{If}} &{\reserved{Let}} &{\reserved{Return}} \\
-{\reserved{True}} &{\reserved{While}} &{\reserved{Yield}} \\
+{\reserved{If}} &{\reserved{Let}} &{\reserved{None}} \\
+{\reserved{Return}} &{\reserved{True}} &{\reserved{While}} \\
+{\reserved{Yield}} & & \\
 \end{tabular}\\
 
 The symbols used in brick are the following: \\
@@ -94,6 +95,7 @@ All other symbols are terminals.\\
 
 \begin{tabular}{lll}
 {\nonterminal{Exp}} & {\arrow}  &{\terminal{[}} {\terminal{]}}  \\
+ & {\delimit}  &{\terminal{[}} {\terminal{None}} {\nonterminal{ListStm}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{Let}} {\nonterminal{CIdent}} {\nonterminal{Exp}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{Yield}} {\nonterminal{Exp}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{True}} {\terminal{]}}  \\

@@ -27,6 +27,7 @@ data JumpStm =
 
 data Exp =
    ENone
+ | EFunNone [Stm]
  | EAsign CIdent Exp
  | EYield Exp
  | ETrue

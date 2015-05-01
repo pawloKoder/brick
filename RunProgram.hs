@@ -12,6 +12,7 @@ import RunUtils
 
 evalExpresion :: Exp -> Exe BValue
 evalExpresion ENone = return BVNone
+evalExpresion (EFunNone _) = return BVNone
 evalExpresion (EAsign (CIdent ident) expr) = do
     value <- evalExpresion expr
     updateVarIntoEnv ident value >> return value
