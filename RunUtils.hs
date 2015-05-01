@@ -35,6 +35,7 @@ data BValue
     | BVBreak BValue
     | BVContinue BValue
     | BVYield BValue
+    deriving (Eq, Ord, Show)
 
 
 boolCast :: BValue -> Exe Bool
