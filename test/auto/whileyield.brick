@@ -3,6 +3,7 @@
   [Let res
     [While [Lt i 10]
       [Yield i]
+      [Let i [Add i 1]]
     ]
   ]
 ]

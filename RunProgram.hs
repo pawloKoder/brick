@@ -29,7 +29,7 @@ evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
     where forLoop current end ys = if current < end
                                 then do
                                     declareVarIntoEnv ident (BVInt current)
-                                    res <- runFunctionStatements stmts
+                                    res <- runStatements stmts
                                     case res of
                                         BVReturn _ -> return res
                                         BVBreak value -> return  value
@@ -47,7 +47,7 @@ evalExpresion (EWhile conditionExpr stmts) = do
             cond <- evalExpresion conditionExpr >>= boolCast
             if cond
                 then do
-                    res <- runFunctionStatements stmts
+                    res <- runStatements stmts
                     case res of
                         BVReturn _ -> return res
                         BVBreak value -> return  value
