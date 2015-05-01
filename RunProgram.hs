@@ -140,9 +140,9 @@ runFunDeclaration (FunDec (CIdent name) params stmts) = do
     let fn = (name, makeExeFunction params stmts)
     case lookup name (eFun current) of
         Nothing -> do
-            warn $ "RTW: You are going to override existing function:" ++ name
             put $ current {eFun = fn : (eFun current)}
         Just fun -> do
+            warn $ "RTW: You are going to override existing function:" ++ name
             put $ current {eFun = fn : filter ((/= name).fst) (eFun current)}
 
 
