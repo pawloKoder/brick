@@ -14,7 +14,9 @@ builtInFunctions = [
     ("Or", bfOr),
     ("Not", bfNot),
     -- Misc
-    ("Exit", bfExit)
+    ("Exit", bfExit),
+    -- IO
+    ("PrintLn", bfPrintLn)
     ] ++ comparisonFunctions
     ++ aritmeticFunctions
 
@@ -65,3 +67,8 @@ bfExit [(BVInt result)] = do
         else throwError $ "Program ended with error code: " ++ show result
     return BVNone
 
+
+bfPrintLn :: ExeFunction
+bfPrintLn l = do
+    liftIO $ mapM_ print l
+    return BVNone

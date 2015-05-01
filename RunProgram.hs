@@ -27,7 +27,7 @@ evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
         modify $ \s-> s {eYieldStatus = YSLoop ys}
         declareVarIntoEnv ident (BVInt begin)
         forLoop begin end ys
-    where forLoop current end ys = if current < end
+    where forLoop current end ys = if current <= end
                                 then do
                                     declareVarIntoEnv ident (BVInt current)
                                     res <- runStatements stmts
