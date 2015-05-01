@@ -1,5 +1,5 @@
 [Def Main
-    [If [True] [] 
+    [If [True] []
     | Else [Exit 1]]
 
     [If [False] [Exit 1]

@@ -2,6 +2,7 @@ module BuiltInFunctions (builtInFunctions) where
 
 import Control.Monad
 import Control.Monad.Error
+import System.Exit
 
 import RunUtils
 
@@ -11,7 +12,9 @@ builtInFunctions = [
     -- Logic
     ("And", bfAnd),
     ("Or", bfOr),
-    ("Not", bfNot)
+    ("Not", bfNot),
+    -- Misc
+    ("Exit", bfExit)
     ] ++ comparisonFunctions
     ++ aritmeticFunctions
 
@@ -53,3 +56,12 @@ aritmeticFunctions = map (\(name, op) -> (name, genericIntAritmetic name op))[
     ("Sub", (-)),
     ("Mul", (*))
     ]
+
+
+bfExit :: ExeFunction
+bfExit [(BVInt result)] = do
+    if result == 0
+        then liftIO exitSuccess
+        else throwError $ "Program ended with error code: " ++ show result
+    return BVNone
+

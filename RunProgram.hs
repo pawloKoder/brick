@@ -17,7 +17,7 @@ evalExpresion (EAsign (CIdent ident) expr) = do
     updateVarIntoEnv ident value >> return value
 evalExpresion (EYield expr) = evalExpresion expr >>= return . BVYield
 evalExpresion ETrue = return $ BVBool True
-evalExpresion EFalse = return $ BVBool True
+evalExpresion EFalse = return $ BVBool False
 evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
     begin <- evalExpresion beginExpr >>= integerCast
     end <- evalExpresion endExpr >>= integerCast
