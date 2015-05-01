@@ -17,7 +17,7 @@ data YeldStatus
 
 
 data Environment = Environment
-    { eVar :: [(String, BValue)]
+    { eVar :: [(String, IORef BValue)]
     , eFun :: [(String, ExeFunction)]
     , eYieldStatus :: YeldStatus
     , eParent :: Maybe Environment
@@ -66,33 +66,26 @@ getFunFromEnv = getFromEnv eFun
 
 
 getVarFromEnv :: String -> Exe BValue
-getVarFromEnv = getFromEnv eVar
-
-
-type Updater a = ([(String, a)] -> (String, a) -> Environment -> Environment)
-
-setIntoEnv :: (Environment -> [(String, a)]) -> Updater a -> String -> a -> Exe ()
-setIntoEnv selector update name value = do
-    current <- get
-    case lookup name (selector current) of
-        Nothing -> do
-            put $ update (selector current) (name, value) current
-        Just fun -> do
-            warn $ "RTW: You are going to override existing symbol:" ++ name
-            put $ update (filter ((/= name).fst) (selector current)) (name, value) current
-
-
-setFunIntoEnv :: String -> ExeFunction -> Exe ()
-setFunIntoEnv = setIntoEnv eFun updateFunEnv where
-    updateFunEnv record value obj = obj {eFun = value : record}
+getVarFromEnv name = getFromEnv eVar name >>= liftIO . readIORef
 
 
 -- Inserts or update var.
-setVarIntoEnv :: String -> BValue -> Exe ()
-setVarIntoEnv = setIntoEnv eVar updateVarEnv where
-    updateVarEnv record value obj = obj {eVar = value : record}
+declareVarIntoEnv :: String -> BValue -> Exe ()
+declareVarIntoEnv name value = do
+    current <- get
+    case lookup name (eVar current) of
+        Nothing -> do
+            var <- liftIO $ newIORef value
+            put $ current {eVar = (name, var) : (eVar current)}
+        Just var -> liftIO $ modifyIORef var $ const value
 
 
-insertVarIntoEnv :: String -> BValue -> Exe ()
-insertVarIntoEnv name value = do
-    modify $ \s -> s {eVar = ((name, value) : filter ((/= name).fst) (eVar s)) }
+-- Recursive update value or add new in current env
+updateVarIntoEnv :: String -> BValue -> Exe ()
+updateVarIntoEnv name value = do
+    currentEnv <- get
+    maybe (declareVarIntoEnv name value) (\v->liftIO $ modifyIORef v (const value)) (updateIt currentEnv)
+    where updateIt env = case lookup name (eVar env) of
+                          Just var -> Just var
+                          Nothing -> eParent env >>= updateIt
+

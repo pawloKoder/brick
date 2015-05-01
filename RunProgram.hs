@@ -14,7 +14,7 @@ evalExpresion :: Exp -> Exe BValue
 evalExpresion ENone = return BVNone
 evalExpresion (EAsign (CIdent ident) expr) = do
     value <- evalExpresion expr
-    setVarIntoEnv ident value >> return value
+    updateVarIntoEnv ident value >> return value
 evalExpresion (EYield expr) = evalExpresion expr >>= return . BVYield
 evalExpresion ETrue = return $ BVBool True
 evalExpresion EFalse = return $ BVBool True
@@ -24,11 +24,11 @@ evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
     ys <- liftIO $ newIORef []
     inEnvironment $ do
         modify $ \s-> s {eYieldStatus = YSLoop ys}
-        insertVarIntoEnv ident (BVInt begin)
+        declareVarIntoEnv ident (BVInt begin)
         forLoop begin end ys
     where forLoop current end ys = if current < end
                                 then do
-                                    setVarIntoEnv ident (BVInt current)
+                                    declareVarIntoEnv ident (BVInt current)
                                     res <- runFunctionStatements stmts
                                     case res of
                                         BVReturn _ -> return res
@@ -131,12 +131,19 @@ runFunctionStatements stmts = do
 makeExeFunction :: [FunParam] -> [Stm] -> ExeFunction
 makeExeFunction params stmts = \values -> do
     let joinParams params values = zip (map (\(FunParam (CIdent s)) -> s) params) values
-    inEnvironment $ mapM_ (uncurry insertVarIntoEnv) (joinParams params values) >> runFunctionStatements stmts
+    inEnvironment $ mapM_ (uncurry declareVarIntoEnv) (joinParams params values) >> runFunctionStatements stmts
 
 
 runFunDeclaration :: FunDeclaration -> Exe ()
-runFunDeclaration (FunDec (CIdent name) params stmts) =
-    setFunIntoEnv name (makeExeFunction params stmts)
+runFunDeclaration (FunDec (CIdent name) params stmts) = do
+    current <- get
+    let fn = (name, makeExeFunction params stmts)
+    case lookup name (eFun current) of
+        Nothing -> do
+            warn $ "RTW: You are going to override existing function:" ++ name
+            put $ current {eFun = fn : (eFun current)}
+        Just fun -> do
+            put $ current {eFun = fn : filter ((/= name).fst) (eFun current)}
 
 
 -- Przeleć liste i wykonuj runFunDeclaration
