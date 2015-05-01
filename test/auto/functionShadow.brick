@@ -1,0 +1,9 @@
+[Def test1 [Return 1]]
+[Def test2 [Return 2]]
+[Def test1 [Return 1]]
+[Def Main
+   [Def test1 [Def test2 [Return 4]] [Return 3]]
+   [If [Not [Eq [test2] 2]] [Return -1]]
+   [If [Not [Eq [test1] 3]] [Return -1]]
+   [If [Not [Eq [test2] 2]] [Return -1]]
+]
