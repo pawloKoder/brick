@@ -7,7 +7,7 @@ comment "//";
 token CIdent (letter (letter | digit | '_')*) ;
 
 SIf.           Stm ::= "[" "If" Exp [Stm] "]";
-SIfElse.       Stm ::= "[" "If" Exp [Stm] "|" "|" "Else" [Stm] "]" ;
+SIfElse.       Stm ::= "[" "If" Exp [Stm] "|" "Else" [Stm] "]" ;
 SJump.         Stm ::= JumpStm ;
 SExp.          Stm ::= Exp ;
 SFunDef.       Stm ::= FunDeclaration ;

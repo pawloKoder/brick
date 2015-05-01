@@ -92,7 +92,7 @@ instance Print Program where
 instance Print Stm where
   prt i e = case e of
    SIf exp stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 stms , doc (showString "]")])
-   SIfElse exp stms0 stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 stms0 , doc (showString "|") , doc (showString "|") , doc (showString "Else") , prt 0 stms , doc (showString "]")])
+   SIfElse exp stms0 stms -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "If") , prt 0 exp , prt 0 stms0 , doc (showString "|") , doc (showString "Else") , prt 0 stms , doc (showString "]")])
    SJump jumpstm -> prPrec i 0 (concatD [prt 0 jumpstm])
    SExp exp -> prPrec i 0 (concatD [prt 0 exp])
    SFunDef fundeclaration -> prPrec i 0 (concatD [prt 0 fundeclaration])
