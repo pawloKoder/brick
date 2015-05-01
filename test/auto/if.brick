@@ -1,7 +1,7 @@
-[Def Main   
-    [If [True] []]
-    [Else [Exit 1]]
-    
-    [If [False] [Exit 1]]
-    [Else []]
+[Def Main
+    [If [True] [] 
+    | Else [Exit 1]]
+
+    [If [False] [Exit 1]
+    | Else []]
 ]

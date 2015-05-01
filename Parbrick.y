@@ -31,6 +31,7 @@ import ErrM
  'Yield' { PT _ (TS _ 14) }
  '[' { PT _ (TS _ 15) }
  ']' { PT _ (TS _ 16) }
+ '|' { PT _ (TS _ 17) }
 
 L_integ  { PT _ (TI $$) }
 L_quoted { PT _ (TL $$) }
@@ -50,7 +51,7 @@ Program : ListFunDeclaration { Progr (reverse $1) }
 
 Stm :: { Stm }
 Stm : '[' 'If' Exp ListStm ']' { SIf $3 (reverse $4) } 
-  | '[' 'If' Exp ListStm ']' '[' 'Else' ListStm ']' { SIfElse $3 (reverse $4) (reverse $8) }
+  | '[' 'If' Exp ListStm '|' '|' 'Else' ListStm ']' { SIfElse $3 (reverse $4) (reverse $8) }
   | JumpStm { SJump $1 }
   | Exp { SExp $1 }
   | FunDeclaration { SFunDef $1 }

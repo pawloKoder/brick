@@ -19,7 +19,7 @@ $i = [$l $d _ ']          -- identifier character
 $u = [\0-\255]          -- universal: any character
 
 @rsyms =    -- symbols and non-identifier-like reserved words
-   \[ | \] | \- | \@
+   \[ | \] | \| | \- | \@
 
 :-
 "//" [.]* ; -- Toss single line comments
@@ -88,7 +88,7 @@ eitherResIdent tv s = treeFind resWords
                               | s > a  = treeFind right
                               | s == a = t
 
-resWords = b "If" 9 (b "Def" 5 (b "Break" 3 (b "@" 2 (b "-" 1 N N) N) (b "Continue" 4 N N)) (b "False" 7 (b "Else" 6 N N) (b "For" 8 N N))) (b "While" 13 (b "Return" 11 (b "Let" 10 N N) (b "True" 12 N N)) (b "[" 15 (b "Yield" 14 N N) (b "]" 16 N N)))
+resWords = b "If" 9 (b "Def" 5 (b "Break" 3 (b "@" 2 (b "-" 1 N N) N) (b "Continue" 4 N N)) (b "False" 7 (b "Else" 6 N N) (b "For" 8 N N))) (b "Yield" 14 (b "True" 12 (b "Return" 11 (b "Let" 10 N N) N) (b "While" 13 N N)) (b "]" 16 (b "[" 15 N N) (b "|" 17 N N)))
    where b s n = let bs = id s
                   in B bs (TS bs n)
 
