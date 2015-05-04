@@ -5,7 +5,7 @@ module Absbrick where
 
 newtype CIdent = CIdent String deriving (Eq,Ord,Show)
 data Program =
-   Progr [FunDeclaration]
+   Progr [Stm]
   deriving (Eq,Ord,Show)
 
 data Stm =
@@ -14,6 +14,7 @@ data Stm =
  | SJump JumpStm
  | SExp Exp
  | SFunDef FunDeclaration
+ | SExec Stm
   deriving (Eq,Ord,Show)
 
 data JumpStm =

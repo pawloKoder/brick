@@ -16,7 +16,7 @@ transCIdent x = case x of
 
 transProgram :: Program -> Result
 transProgram x = case x of
-  Progr fundeclarations  -> failure x
+  Progr stms  -> failure x
 
 
 transStm :: Stm -> Result
@@ -26,6 +26,7 @@ transStm x = case x of
   SJump jumpstm  -> failure x
   SExp exp  -> failure x
   SFunDef fundeclaration  -> failure x
+  SExec stm  -> failure x
 
 
 transJumpStm :: JumpStm -> Result

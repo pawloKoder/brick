@@ -1,5 +1,5 @@
 entrypoints Program;
-Progr. Program ::= [FunDeclaration] ;
+Progr. Program ::= [Stm] ;
 
 comment "/*" "*/" ;
 comment "//";
@@ -11,6 +11,7 @@ SIfElse.       Stm ::= "[" "If" Exp [Stm] "|" "Else" [Stm] "]" ;
 SJump.         Stm ::= JumpStm ;
 SExp.          Stm ::= Exp ;
 SFunDef.       Stm ::= FunDeclaration ;
+SExec.         Stm ::= "[" "Exec" Stm "]" ;
 
 separator Stm "" ;
 

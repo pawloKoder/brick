@@ -6,8 +6,11 @@ import Control.Monad.Error
 import Control.Monad.State.Strict
 import Data.IORef
 
+import Lexbrick
+import Parbrick
 import Absbrick
 import RunUtils
+import ErrM
 
 
 evalExpresion :: Exp -> Exe BValue
@@ -85,6 +88,19 @@ runStatement (SIfElse cond ifStmts elseStmts) = evalExpresion cond >>= boolCast 
 runStatement (SJump jumpStm) = runJumpStatement jumpStm
 runStatement (SExp expr) = evalExpresion expr
 runStatement (SFunDef def) = runFunDeclaration def >> return BVNone
+runStatement (SExec stm) = do
+    res <- runStatement stm
+    case res of
+        BVString str -> execString str
+        _ -> throwError "RTE: Exec: You are trying to call sth not callable."
+
+
+execString :: String -> Exe BValue
+execString source = do
+    case pProgram . myLexer $ source of
+        Bad s -> throwError $ ("RTE: Exec: Parse failed: " ++ s)
+        Ok (Progr stmts) -> do
+            runStatements stmts
 
 
 runJumpStatement :: JumpStm -> Exe BValue
@@ -150,8 +166,12 @@ runFunDeclaration (FunDec (CIdent name) params stmts) = do
 -- Przeleć liste i wykonuj runFunDeclaration
 -- Wykonaj to co jest pod Main bez parametrów
 runProgram :: Program -> IO (Either String Integer)
-runProgram (Progr decls) = do
-    let evalResult = inEnvironment $ mapM_ runFunDeclaration decls >> getFunFromEnv "Main" >>= \f -> f []
+runProgram (Progr program) = do
+    let runStm stm = do
+        case stm of
+            (SFunDef decl) -> runFunDeclaration decl
+            _ -> throwError $ "RTE: Not fun decl in global scope" ++ (show stm)
+    let evalResult = inEnvironment $ mapM_ runStm program >> getFunFromEnv "Main" >>= \f -> f []
     p <- evalStateT (runErrorT evalResult) (Environment [] builtInFunctions YSFunction Nothing)
     case p of
         Left l -> return $ Left l

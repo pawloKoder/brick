@@ -1,0 +1,4 @@
+[Def Main
+  [Let code "[PrintLn \"test\"]"]
+  [Exec code]
+]

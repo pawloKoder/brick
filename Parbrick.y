@@ -21,18 +21,19 @@ import ErrM
  'Continue' { PT _ (TS _ 4) }
  'Def' { PT _ (TS _ 5) }
  'Else' { PT _ (TS _ 6) }
- 'False' { PT _ (TS _ 7) }
- 'For' { PT _ (TS _ 8) }
- 'If' { PT _ (TS _ 9) }
- 'Let' { PT _ (TS _ 10) }
- 'None' { PT _ (TS _ 11) }
- 'Return' { PT _ (TS _ 12) }
- 'True' { PT _ (TS _ 13) }
- 'While' { PT _ (TS _ 14) }
- 'Yield' { PT _ (TS _ 15) }
- '[' { PT _ (TS _ 16) }
- ']' { PT _ (TS _ 17) }
- '|' { PT _ (TS _ 18) }
+ 'Exec' { PT _ (TS _ 7) }
+ 'False' { PT _ (TS _ 8) }
+ 'For' { PT _ (TS _ 9) }
+ 'If' { PT _ (TS _ 10) }
+ 'Let' { PT _ (TS _ 11) }
+ 'None' { PT _ (TS _ 12) }
+ 'Return' { PT _ (TS _ 13) }
+ 'True' { PT _ (TS _ 14) }
+ 'While' { PT _ (TS _ 15) }
+ 'Yield' { PT _ (TS _ 16) }
+ '[' { PT _ (TS _ 17) }
+ ']' { PT _ (TS _ 18) }
+ '|' { PT _ (TS _ 19) }
 
 L_integ  { PT _ (TI $$) }
 L_quoted { PT _ (TL $$) }
@@ -47,7 +48,7 @@ String  :: { String }  : L_quoted {  $1 }
 CIdent    :: { CIdent} : L_CIdent { CIdent ($1)}
 
 Program :: { Program }
-Program : ListFunDeclaration { Progr (reverse $1) } 
+Program : ListStm { Progr (reverse $1) } 
 
 
 Stm :: { Stm }
@@ -56,6 +57,7 @@ Stm : '[' 'If' Exp ListStm ']' { SIf $3 (reverse $4) }
   | JumpStm { SJump $1 }
   | Exp { SExp $1 }
   | FunDeclaration { SFunDef $1 }
+  | '[' 'Exec' Stm ']' { SExec $3 }
 
 
 ListStm :: { [Stm] }

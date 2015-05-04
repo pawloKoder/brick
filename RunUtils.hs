@@ -41,12 +41,17 @@ data BValue
 boolCast :: BValue -> Exe Bool
 boolCast (BVBool value) = return value
 boolCast (BVInt value) = warn "RTW: Casting from Int to Bool" >> return (value /= 0)
-boolCast _ = throwError "RTE: Casting error"
+boolCast a = throwError $ "RTE: Casting error (Expected bool) " ++ (show a)
 
 
 integerCast :: BValue -> Exe Integer
 integerCast (BVInt value) = return value
-integerCast _ = throwError "RTE: Casting error"
+integerCast a = throwError $ "RTE: Casting error (Expected int) " ++ (show a)
+
+
+stringCast :: BValue -> Exe String
+stringCast (BVString value) = return value
+stringCast a = throwError $ "RTE: Casting error (Expected string)" ++ (show a)
 
 
 warn :: String -> Exe ()

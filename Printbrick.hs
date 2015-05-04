@@ -86,7 +86,7 @@ instance Print CIdent where
 
 instance Print Program where
   prt i e = case e of
-   Progr fundeclarations -> prPrec i 0 (concatD [prt 0 fundeclarations])
+   Progr stms -> prPrec i 0 (concatD [prt 0 stms])
 
 
 instance Print Stm where
@@ -96,6 +96,7 @@ instance Print Stm where
    SJump jumpstm -> prPrec i 0 (concatD [prt 0 jumpstm])
    SExp exp -> prPrec i 0 (concatD [prt 0 exp])
    SFunDef fundeclaration -> prPrec i 0 (concatD [prt 0 fundeclaration])
+   SExec stm -> prPrec i 0 (concatD [doc (showString "[") , doc (showString "Exec") , prt 0 stm , doc (showString "]")])
 
   prtList es = case es of
    [] -> (concatD [])

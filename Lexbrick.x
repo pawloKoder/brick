@@ -88,7 +88,7 @@ eitherResIdent tv s = treeFind resWords
                               | s > a  = treeFind right
                               | s == a = t
 
-resWords = b "Let" 10 (b "Def" 5 (b "Break" 3 (b "@" 2 (b "-" 1 N N) N) (b "Continue" 4 N N)) (b "For" 8 (b "False" 7 (b "Else" 6 N N) N) (b "If" 9 N N))) (b "Yield" 15 (b "True" 13 (b "Return" 12 (b "None" 11 N N) N) (b "While" 14 N N)) (b "]" 17 (b "[" 16 N N) (b "|" 18 N N)))
+resWords = b "If" 10 (b "Def" 5 (b "Break" 3 (b "@" 2 (b "-" 1 N N) N) (b "Continue" 4 N N)) (b "False" 8 (b "Exec" 7 (b "Else" 6 N N) N) (b "For" 9 N N))) (b "While" 15 (b "Return" 13 (b "None" 12 (b "Let" 11 N N) N) (b "True" 14 N N)) (b "]" 18 (b "[" 17 (b "Yield" 16 N N) N) (b "|" 19 N N)))
    where b s n = let bs = id s
                   in B bs (TS bs n)
 

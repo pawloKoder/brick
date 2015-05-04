@@ -16,7 +16,9 @@ builtInFunctions = [
     -- Misc
     ("Exit", bfExit),
     -- IO
-    ("PrintLn", bfPrintLn)
+    ("PrintLn", bfPrintLn),
+    -- String
+    ("Concat", bfConcat)
     ] ++ comparisonFunctions
     ++ aritmeticFunctions
 
@@ -70,5 +72,13 @@ bfExit [(BVInt result)] = do
 
 bfPrintLn :: ExeFunction
 bfPrintLn l = do
-    liftIO $ mapM_ print l
+    let printVar var = do
+        case var of
+             _ -> print var
+    liftIO $ mapM_ printVar l
     return BVNone
+
+
+bfConcat :: ExeFunction
+bfConcat l = liftM (BVString . concat) $ mapM stringCast l
+

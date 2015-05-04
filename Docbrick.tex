@@ -45,10 +45,10 @@ The reserved words used in brick are the following: \\
 
 \begin{tabular}{lll}
 {\reserved{Break}} &{\reserved{Continue}} &{\reserved{Def}} \\
-{\reserved{Else}} &{\reserved{False}} &{\reserved{For}} \\
-{\reserved{If}} &{\reserved{Let}} &{\reserved{None}} \\
-{\reserved{Return}} &{\reserved{True}} &{\reserved{While}} \\
-{\reserved{Yield}} & & \\
+{\reserved{Else}} &{\reserved{Exec}} &{\reserved{False}} \\
+{\reserved{For}} &{\reserved{If}} &{\reserved{Let}} \\
+{\reserved{None}} &{\reserved{Return}} &{\reserved{True}} \\
+{\reserved{While}} &{\reserved{Yield}} & \\
 \end{tabular}\\
 
 The symbols used in brick are the following: \\
@@ -68,7 +68,7 @@ and {\emptyP} (empty rule) belong to the BNF notation.
 All other symbols are terminals.\\
 
 \begin{tabular}{lll}
-{\nonterminal{Program}} & {\arrow}  &{\nonterminal{ListFunDeclaration}}  \\
+{\nonterminal{Program}} & {\arrow}  &{\nonterminal{ListStm}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -77,6 +77,7 @@ All other symbols are terminals.\\
  & {\delimit}  &{\nonterminal{JumpStm}}  \\
  & {\delimit}  &{\nonterminal{Exp}}  \\
  & {\delimit}  &{\nonterminal{FunDeclaration}}  \\
+ & {\delimit}  &{\terminal{[}} {\terminal{Exec}} {\nonterminal{Stm}} {\terminal{]}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
