@@ -1,0 +1,13 @@
+[Def Main
+  [Let list [List]]
+  [If [Not [Eq list [List]]] [Return -1]]
+  [Let list [Append list 1]]
+  [If [Not [Eq list [List 1]]] [Return -1]]
+  [Let list [Append list 2]]
+  [If [Not [Eq list [List 1 2]]] [Return -1]]
+  [If [Not [Eq [Head list] 1]] [PrintLn [Head list]][Return -1]]
+  [If [Not [Eq [Last list] 2]] [PrintLn [Last list]] [Return -1]]
+  [If [Not [Eq [Init list] [List 1]]] [PrintLn [Init list]][Return -1]]
+  [If [Not [Eq [Tail list] [List 2]]] [PrintLn [Tail list]] [Return -1]]
+  [If [Not [Eq [Len list] 2]] [PrintLn [Len list]] [Return -1]]
+]
