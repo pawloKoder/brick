@@ -54,6 +54,11 @@ stringCast (BVString value) = return value
 stringCast a = throwError $ "RTE: Casting error (Expected string)" ++ (show a)
 
 
+listCast :: BValue -> Exe [BValue]
+listCast (BVList value) = return value
+listCast a = throwError $ "RTE: Casting error (Expected string)" ++ (show a)
+
+
 warn :: String -> Exe ()
 warn error = liftIO $ hPutStrLn stderr error
 
