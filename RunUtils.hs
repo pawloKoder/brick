@@ -56,7 +56,12 @@ stringCast a = throwError $ "RTE: Casting error (Expected string)" ++ (show a)
 
 listCast :: BValue -> Exe [BValue]
 listCast (BVList value) = return value
-listCast a = throwError $ "RTE: Casting error (Expected string)" ++ (show a)
+listCast a = throwError $ "RTE: Casting error (Expected list)" ++ (show a)
+
+
+dictCast :: BValue -> Exe [(BValue, BValue)]
+dictCast (BVDict value) = return value
+dictCast a = throwError $ "RTE: Casting error (Expected dict)" ++ (show a)
 
 
 warn :: String -> Exe ()

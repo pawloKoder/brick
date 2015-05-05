@@ -22,10 +22,15 @@ builtInFunctions = [
     ("Concat", bfConcat),
     -- List
     ("Append", bfAppend),
-    ("List", bfList)
+    ("List", bfList),
+    -- Dict
+    ("Dict", bfDict),
+    ("Set", bfDictSet),
+    ("Get", bfDictGet)
     ] ++ comparisonFunctions
     ++ aritmeticFunctions
     ++ listFunctions
+    ++ dictFunctions
 
 
 bfAnd :: ExeFunction
@@ -101,7 +106,7 @@ bfAppend l = throwError $ "RTE: Append error" ++ show l
 
 genericListFunction :: String -> ([BValue] -> BValue) -> ExeFunction
 genericListFunction name operator [list] = liftM operator $ listCast list
-genericListFunction name operator l = throwError $ "RTE: Append error" ++ show l
+genericListFunction name operator l = throwError $ "RTE: " ++ name ++ " " ++ show l
 
 listFunctions = map (\(name, op) -> (name, genericListFunction name op))[
     ("Init", BVList . init),
@@ -113,3 +118,35 @@ listFunctions = map (\(name, op) -> (name, genericListFunction name op))[
 
 bfList :: ExeFunction
 bfList l = return $ BVList l
+
+
+genericDictFunction :: String -> ([(BValue, BValue)] -> BValue) -> ExeFunction
+genericDictFunction name operator [list] = liftM operator $ dictCast list
+genericDictFunction name operator l = throwError $ "RTE: " ++ name ++ " " ++ show l
+
+dictFunctions = map (\(name, op) -> (name, genericDictFunction name op))[
+    ("Size", BVInt . fromIntegral . length),
+    ("Keys", BVList . fst . unzip),
+    ("Values", BVList . snd . unzip)
+    ]
+
+
+bfDict :: ExeFunction
+bfDict [] = return $ BVDict []
+bfdict l = throwError $ "RTE: Dict constructor error" ++ show l
+
+
+bfDictSet :: ExeFunction
+bfDictSet [dict, key, value] = do
+    dictList <- liftM2 filter (return ((/= key).fst)) (dictCast dict)
+    return $ BVDict $ (:) (key, value) dictList
+bfDictSet l = throwError $ "RTE: Dict Set error" ++ show l
+
+
+bfDictGet :: ExeFunction
+bfDictGet [dict, key] = do
+    res <- liftM2 lookup (return key) (dictCast dict)
+    case res of
+        Nothing -> throwError $ "RTE: Key error" ++ show key
+        Just value -> return value
+bfdictGet l = throwError $ "RTE: Dict Get error" ++ show l
