@@ -83,15 +83,7 @@ bfExit [(BVInt result)] = do
 
 bfPrintLn :: ExeFunction
 bfPrintLn l = do
-    let printVar var = do
-        case var of
-             (BVInt value) -> print value
-             (BVString value) -> print value
-             (BVBool value) -> print value
-             (BVList value) -> print value
-             (BVDict value) -> print value
-             _ -> print var
-    liftIO $ mapM_ printVar l
+    liftIO $ mapM_ (print . toStr) l
     return BVNone
 
 
@@ -139,7 +131,7 @@ bfdict l = throwError $ "RTE: Dict constructor error" ++ show l
 bfDictSet :: ExeFunction
 bfDictSet [dict, key, value] = do
     dictList <- liftM2 filter (return ((/= key).fst)) (dictCast dict)
-    return $ BVDict $ (:) (key, value) dictList
+    return $ BVDict $ (key, value) : dictList
 bfDictSet l = throwError $ "RTE: Dict Set error" ++ show l
 
 
@@ -147,6 +139,6 @@ bfDictGet :: ExeFunction
 bfDictGet [dict, key] = do
     res <- liftM2 lookup (return key) (dictCast dict)
     case res of
-        Nothing -> throwError $ "RTE: Key error" ++ show key
+        Nothing -> throwError $ "RTE: Key error " ++ show key
         Just value -> return value
-bfdictGet l = throwError $ "RTE: Dict Get error" ++ show l
+bfdictGet l = throwError $ "RTE: Dict Get error " ++ show l

@@ -3,6 +3,7 @@ module RunUtils where
 import Control.Monad.Error
 import Control.Monad.State.Strict
 import Data.IORef
+import Data.List
 import System.IO ( stderr, hPutStrLn )
 
 
@@ -36,6 +37,15 @@ data BValue
     | BVContinue BValue
     | BVYield BValue
     deriving (Eq, Ord, Show)
+
+toStr :: BValue -> String
+toStr (BVInt a) = show a
+toStr (BVBool a) = show a
+toStr (BVString a) = id a
+toStr (BVList l) = "[" ++ (intercalate ", " (map toStr l)) ++ "]"
+toStr (BVDict l) = "{" ++ (intercalate ", " (map (\(x, y) -> (toStr x) ++ " -> "++ (toStr y)) l)) ++ "}"
+toStr a = show a
+
 
 
 boolCast :: BValue -> Exe Bool
