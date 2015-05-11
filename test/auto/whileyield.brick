@@ -6,4 +6,5 @@
       [Let i [Add i 1]]
     ]
   ]
+  [PrintLn res]
 ]

@@ -41,7 +41,7 @@ evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
                                             liftIO $ modifyIORef ys (value:)
                                             forLoop (current + 1) end ys
                                         _ -> forLoop (current + 1) end ys
-                                else liftIO $ (readIORef ys) >>= return.BVList
+                                else liftIO $ (readIORef ys) >>= return . BVList . reverse
 evalExpresion (EWhile conditionExpr stmts) = do
     ys <- liftIO $ newIORef []
     inEnvironment $ do
@@ -59,7 +59,7 @@ evalExpresion (EWhile conditionExpr stmts) = do
                             liftIO $ modifyIORef ys (value:)
                             whileLoop ys
                         _ -> whileLoop ys
-                else liftIO $ (readIORef ys) >>= return.BVList
+                else liftIO $ (readIORef ys) >>= return . BVList . reverse
 evalExpresion (EInt value) = return $ BVInt value
 evalExpresion (ENegInt value) = return $ BVInt (0-value)
 evalExpresion (EString value) = return $ BVString value
