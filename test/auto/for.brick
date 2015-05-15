@@ -3,6 +3,5 @@
   [For a 1 10
      [Assign i [Add i a]]
   ]
-  [PrintLn i]
   [If [Not [Eq i 55]] [Return -1]]
 ]

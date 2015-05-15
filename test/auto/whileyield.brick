@@ -6,5 +6,5 @@
       [Assign i [Add i 1]]
     ]
   ]
-  [PrintLn res]
+  [If [Neq res [List 0 1 2 3 4 5 6 7 8 9]] [Print res][Return -1]]
 ]

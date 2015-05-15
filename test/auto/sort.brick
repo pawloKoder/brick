@@ -31,7 +31,6 @@
 ]
 [Def Main
     [Let unsorted [List 7 16 8 20 12 11 13 3 14 4 5 2 1 19 15 9 6 18 17 10]]
-    // [Let unsorted [List 3 2 1]]
     [Let sorted [quicksort unsorted]]
-    [PrintLn sorted]
+    [If [Neq sorted [For i 1 20 [Yield i]]] [Return -1]]
 ]

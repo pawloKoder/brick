@@ -20,6 +20,7 @@ builtInFunctions = [
     ("Exit", bfExit),
     -- IO
     ("PrintLn", bfPrintLn),
+    ("Print", bfPrint),
     -- String
     ("Concat", bfConcat),
     -- List
@@ -94,9 +95,16 @@ bfExit [(BVInt result)] = do
     return BVNone
 
 
+
+bfPrint :: ExeFunction
+bfPrint l = do
+    liftIO $ mapM_ (putStr . toStr) l
+    return BVNone
+
 bfPrintLn :: ExeFunction
 bfPrintLn l = do
-    liftIO $ mapM_ (print . toStr) l
+    bfPrint l
+    liftIO $putStrLn ""
     return BVNone
 
 
