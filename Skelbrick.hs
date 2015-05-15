@@ -43,7 +43,8 @@ transExp :: Exp -> Result
 transExp x = case x of
   ENone  -> failure x
   EFunNone stms  -> failure x
-  EAsign cident exp  -> failure x
+  ELet cident exp  -> failure x
+  EAssign cident exp  -> failure x
   EYield exp  -> failure x
   ETrue  -> failure x
   EFalse  -> failure x

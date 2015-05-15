@@ -44,11 +44,11 @@ The set of reserved words is the set of terminals appearing in the grammar. Thos
 The reserved words used in brick are the following: \\
 
 \begin{tabular}{lll}
-{\reserved{Break}} &{\reserved{Continue}} &{\reserved{Def}} \\
-{\reserved{Else}} &{\reserved{Exec}} &{\reserved{False}} \\
-{\reserved{For}} &{\reserved{If}} &{\reserved{Let}} \\
-{\reserved{None}} &{\reserved{Return}} &{\reserved{True}} \\
-{\reserved{While}} &{\reserved{Yield}} & \\
+{\reserved{Assign}} &{\reserved{Break}} &{\reserved{Continue}} \\
+{\reserved{Def}} &{\reserved{Else}} &{\reserved{Exec}} \\
+{\reserved{False}} &{\reserved{For}} &{\reserved{If}} \\
+{\reserved{Let}} &{\reserved{None}} &{\reserved{Return}} \\
+{\reserved{True}} &{\reserved{While}} &{\reserved{Yield}} \\
 \end{tabular}\\
 
 The symbols used in brick are the following: \\
@@ -98,6 +98,7 @@ All other symbols are terminals.\\
 {\nonterminal{Exp}} & {\arrow}  &{\terminal{[}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{None}} {\nonterminal{ListStm}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{Let}} {\nonterminal{CIdent}} {\nonterminal{Exp}} {\terminal{]}}  \\
+ & {\delimit}  &{\terminal{[}} {\terminal{Assign}} {\nonterminal{CIdent}} {\nonterminal{Exp}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{Yield}} {\nonterminal{Exp}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{True}} {\terminal{]}}  \\
  & {\delimit}  &{\terminal{[}} {\terminal{False}} {\terminal{]}}  \\

@@ -17,23 +17,24 @@ import ErrM
 %token 
  '-' { PT _ (TS _ 1) }
  '@' { PT _ (TS _ 2) }
- 'Break' { PT _ (TS _ 3) }
- 'Continue' { PT _ (TS _ 4) }
- 'Def' { PT _ (TS _ 5) }
- 'Else' { PT _ (TS _ 6) }
- 'Exec' { PT _ (TS _ 7) }
- 'False' { PT _ (TS _ 8) }
- 'For' { PT _ (TS _ 9) }
- 'If' { PT _ (TS _ 10) }
- 'Let' { PT _ (TS _ 11) }
- 'None' { PT _ (TS _ 12) }
- 'Return' { PT _ (TS _ 13) }
- 'True' { PT _ (TS _ 14) }
- 'While' { PT _ (TS _ 15) }
- 'Yield' { PT _ (TS _ 16) }
- '[' { PT _ (TS _ 17) }
- ']' { PT _ (TS _ 18) }
- '|' { PT _ (TS _ 19) }
+ 'Assign' { PT _ (TS _ 3) }
+ 'Break' { PT _ (TS _ 4) }
+ 'Continue' { PT _ (TS _ 5) }
+ 'Def' { PT _ (TS _ 6) }
+ 'Else' { PT _ (TS _ 7) }
+ 'Exec' { PT _ (TS _ 8) }
+ 'False' { PT _ (TS _ 9) }
+ 'For' { PT _ (TS _ 10) }
+ 'If' { PT _ (TS _ 11) }
+ 'Let' { PT _ (TS _ 12) }
+ 'None' { PT _ (TS _ 13) }
+ 'Return' { PT _ (TS _ 14) }
+ 'True' { PT _ (TS _ 15) }
+ 'While' { PT _ (TS _ 16) }
+ 'Yield' { PT _ (TS _ 17) }
+ '[' { PT _ (TS _ 18) }
+ ']' { PT _ (TS _ 19) }
+ '|' { PT _ (TS _ 20) }
 
 L_integ  { PT _ (TI $$) }
 L_quoted { PT _ (TL $$) }
@@ -77,7 +78,8 @@ JumpStm : '[' 'Return' ']' { SjumpReturn }
 Exp :: { Exp }
 Exp : '[' ']' { ENone } 
   | '[' 'None' ListStm ']' { EFunNone (reverse $3) }
-  | '[' 'Let' CIdent Exp ']' { EAsign $3 $4 }
+  | '[' 'Let' CIdent Exp ']' { ELet $3 $4 }
+  | '[' 'Assign' CIdent Exp ']' { EAssign $3 $4 }
   | '[' 'Yield' Exp ']' { EYield $3 }
   | '[' 'True' ']' { ETrue }
   | '[' 'False' ']' { EFalse }

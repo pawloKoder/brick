@@ -16,9 +16,12 @@ import ErrM
 evalExpresion :: Exp -> Exe BValue
 evalExpresion ENone = return BVNone
 evalExpresion (EFunNone _) = return BVNone
-evalExpresion (EAsign (CIdent ident) expr) = do
+evalExpresion (EAssign (CIdent ident) expr) = do
     value <- evalExpresion expr
     updateVarIntoEnv ident value >> return value
+evalExpresion (ELet (CIdent ident) expr) = do
+    value <- evalExpresion expr
+    declareVarIntoEnv ident value >> return value
 evalExpresion (EYield expr) = evalExpresion expr >>= return . BVYield
 evalExpresion ETrue = return $ BVBool True
 evalExpresion EFalse = return $ BVBool False

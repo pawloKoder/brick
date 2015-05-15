@@ -114,4 +114,3 @@ updateVarIntoEnv name value = do
     where updateIt env = case lookup name (eVar env) of
                           Just var -> Just var
                           Nothing -> eParent env >>= updateIt
-

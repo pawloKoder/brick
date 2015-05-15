@@ -25,6 +25,7 @@ builtInFunctions = [
     -- List
     ("Append", bfAppend),
     ("List", bfList),
+    ("Join", bfListJoin),
     -- Dict
     ("Dict", bfDict),
     ("Set", bfDictSet),
@@ -106,6 +107,10 @@ bfConcat l = liftM (BVString . concat) $ mapM stringCast l
 bfAppend :: ExeFunction
 bfAppend [list, element] = liftM BVList $ liftM2 (++) (listCast list) (return [element])
 bfAppend l = throwError $ "RTE: Append error" ++ show l
+
+
+bfListJoin :: ExeFunction
+bfListJoin l = liftM (BVList . concat) $ mapM listCast l
 
 
 genericListFunction :: String -> ([BValue] -> BValue) -> ExeFunction
