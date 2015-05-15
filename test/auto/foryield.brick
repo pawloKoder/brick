@@ -2,6 +2,9 @@
   [Let res
     [For i 1 10
       [Yield i]
+      [PrintLn i]
+      [Continue i]
+      [PrintLn i]
     ]
   ]
   [PrintLn res]

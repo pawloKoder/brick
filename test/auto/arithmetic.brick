@@ -1,0 +1,6 @@
+[Def Main
+    [Let a [Add 1 2]]
+    [Let a [Mul 2 2]]
+    [Let a [Sub 1 2]]
+    [Let a [Div 4 2]]
+]

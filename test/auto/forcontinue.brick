@@ -4,4 +4,5 @@
       [If [Le i 5] [Continue i]]
     ]
   ]
+  [PrintLn res]
 ]

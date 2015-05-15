@@ -1,0 +1,6 @@
+[Def Main
+  [Let a 5]
+  [Def goo [PrintLn a]]
+  [Def foo [Let a 6] [goo]]
+  [foo]
+]
