@@ -18,3 +18,13 @@ for i in ./test/auto/* ; do
         fi
 done
 
+
+for i in ./test/negative/* ; do
+        echo -n "Test: "$i
+        ./interpreter $i
+        if [[ $? -eq 0 ]] ; then
+                echo -e ": ${RED}Not expected OK${NC}"
+        else
+                echo -e ": ${GREEN}EXPECTED FAIL${NC}"
+        fi
+done
