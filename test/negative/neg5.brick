@@ -1,0 +1,4 @@
+[Def Main
+    [Let d [Dict]]
+    [Get d "foo"]
+]

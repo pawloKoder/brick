@@ -1,0 +1,3 @@
+[Def Main
+    [PrintLn [Div 4 0]]
+]
