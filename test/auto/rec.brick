@@ -1,0 +1,13 @@
+[Def b @i
+    [PrintLn "b"]
+    [If [Le i 0] [Return 1]]
+    [Return [a [Sub i 1]]]
+[Def a @i
+    [PrintLn "a"]
+    [If [Le i 0] [Return 1]]
+    [Return [b [Sub i 1]]]
+]
+]
+[Def Main
+    [a 10]
+]

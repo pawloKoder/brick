@@ -4,3 +4,17 @@
   [Def foo [Let a 6] [Return [goo]]]
   [If [Neq [foo] 5] [Print "Expected 5 got: " [foo]] [Return -1]]
 ]
+
+/*
+Example in JavaScript
+var a = function () { return 4 };
+var b = function () { return a(); }
+var c = function () { var a = 5; return b(); }
+var a = function () { return 6 }
+c();
+
+var l = 4;
+var m = function () { return l; }
+var n = function () { var l = 5; return m(); }
+n();
+*/

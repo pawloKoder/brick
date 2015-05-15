@@ -156,22 +156,20 @@ runFunctionStatements stmts = do
         _ -> BVNone
 
 
-makeExeFunction :: [FunParam] -> [Stm] -> ExeFunction
-makeExeFunction params stmts = \values -> do
+makeExeFunction :: [FunParam] -> [Stm] -> Environment -> ExeFunction
+makeExeFunction params stmts exeEnv = \values -> do
     let joinParams params values = zip (map (\(FunParam (CIdent s)) -> s) params) values
-    inEnvironment $ mapM_ (uncurry declareVarIntoEnv) (joinParams params values) >> runFunctionStatements stmts
+    currentEnv <- get
+    put exeEnv
+    result <- inEnvironment $ mapM_ (uncurry declareVarIntoEnv) (joinParams params values) >> runFunctionStatements stmts
+    put currentEnv
+    return result
 
 
 runFunDeclaration :: FunDeclaration -> Exe ()
 runFunDeclaration (FunDec (CIdent name) params stmts) = do
     current <- get
-    let fn = (name, makeExeFunction params stmts)
-    case lookup name (eFun current) of
-        Nothing -> do
-            put $ current {eFun = fn : (eFun current)}
-        Just fun -> do
-            warn $ "RTW: You are going to override existing function:" ++ name
-            put $ current {eFun = fn : filter ((/= name).fst) (eFun current)}
+    declareFunIntoEnv name (makeExeFunction params stmts current)
 
 
 -- Przeleć liste i wykonuj runFunDeclaration

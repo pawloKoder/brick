@@ -13,7 +13,7 @@ type ExeFunction = [BValue] -> Exe BValue
 
 data YeldStatus
     = YSFunction
-    | YSKeepLooking -- Jesteś gdzieś głębiej w pętli
+    | YSKeepLooking
     | YSLoop (IORef [BValue])
 
 
@@ -104,6 +104,18 @@ declareVarIntoEnv name value = do
             var <- liftIO $ newIORef value
             put $ current {eVar = (name, var) : (eVar current)}
         Just var -> liftIO $ modifyIORef var $ const value
+
+
+-- Inserts or update var.
+declareFunIntoEnv :: String -> ExeFunction -> Exe ()
+declareFunIntoEnv name fn = do
+    current <- get
+    case lookup name (eFun current) of
+        Nothing -> do
+            put $ current {eFun = (name, fn) : (eFun current)}
+        Just _ -> do
+            warn $ "RTW: You are going to override existing function:" ++ name
+            put $ current {eFun = (name, fn) : filter ((/= name).fst) (eFun current)}
 
 
 -- Recursive update value or add new in current env
