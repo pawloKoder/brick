@@ -14,6 +14,8 @@ builtInFunctions = [
     ("And", bfAnd),
     ("Or", bfOr),
     ("Not", bfNot),
+    -- Aritmetic
+    ("Div", bfDiv),
     -- Misc
     ("Exit", bfExit),
     -- IO
@@ -26,7 +28,8 @@ builtInFunctions = [
     -- Dict
     ("Dict", bfDict),
     ("Set", bfDictSet),
-    ("Get", bfDictGet)
+    ("Get", bfDictGet),
+    ("Contains", bfDictContains)
     ] ++ comparisonFunctions
     ++ aritmeticFunctions
     ++ listFunctions
@@ -71,6 +74,15 @@ aritmeticFunctions = map (\(name, op) -> (name, genericIntAritmetic name op))[
     ("Sub", (-)),
     ("Mul", (*))
     ]
+
+
+bfDiv :: ExeFunction
+bfDiv [a, b] = do
+    bvalue <- integerCast b
+    if bvalue == 0
+       then throwError $ "RTE: Div error - dividing by zero "
+       else liftM BVInt $ liftM2 (div) (integerCast a) (integerCast b)
+bfDiv l = throwError $ "RTE: Div error - wrong num of parameters " ++ show l
 
 
 bfExit :: ExeFunction
@@ -141,4 +153,13 @@ bfDictGet [dict, key] = do
     case res of
         Nothing -> throwError $ "RTE: Key error " ++ show key
         Just value -> return value
-bfdictGet l = throwError $ "RTE: Dict Get error " ++ show l
+bfDictGet l = throwError $ "RTE: Dict Get error " ++ show l
+
+
+bfDictContains :: ExeFunction
+bfDictContains [dict, key] = do
+    res <- liftM2 lookup (return key) (dictCast dict)
+    case res of
+        Nothing -> return $ BVBool False
+        Just value -> return $ BVBool True
+bfDictContains l = throwError $ "RTE: Dict Contains error " ++ show l
