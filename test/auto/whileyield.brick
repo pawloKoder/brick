@@ -3,7 +3,7 @@
   [Let res
     [While [Lt i 10]
       [Yield i]
-      [Let i [Add i 1]]
+      [Assign i [Add i 1]]
     ]
   ]
   [PrintLn res]

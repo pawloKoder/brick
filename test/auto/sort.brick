@@ -1,0 +1,37 @@
+[Def leftPart @l @div
+    [Return [For i 1 [Len l]
+        [Let h [Head l]]
+        [If [Lt h div] [Yield h]]
+        [Assign l [Tail l]]
+    ]]
+]
+[Def rightPart @l @div
+    [Return [For i 1 [Len l]
+        [Let h [Head l]]
+        [If [Gt h div] [Yield h]]
+        [Assign l [Tail l]]
+    ]]
+]
+[Def mid @l
+    [Let len [Len l]]
+    [Return [For i 1 len
+        [Let h [Head l]]
+        [If [Eq i [Div len 2]] [Break h]]
+        [Assign l [Tail l]]
+    ]]
+]
+[Def quicksort @list
+    [If [Le [Len list ] 1] [Return list]]
+
+    [Let m [mid list]]
+
+    [Let l [quicksort [leftPart list m]]]
+    [Let r [quicksort [rightPart list m]]]
+    [Return [Join l [List m] r]]
+]
+[Def Main
+    [Let unsorted [List 7 16 8 20 12 11 13 3 14 4 5 2 1 19 15 9 6 18 17 10]]
+    // [Let unsorted [List 3 2 1]]
+    [Let sorted [quicksort unsorted]]
+    [PrintLn sorted]
+]

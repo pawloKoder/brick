@@ -1,0 +1,8 @@
+[Def fib @a
+    [If [Eq a 0] [Return 0]]
+    [If [Eq a 1] [Return 1]]
+    [Return [Add [fib [Sub a 1]] [fib [Sub a 2]]]]
+]
+[Def Main
+    [If [Neq [fib 17] 1597] [Return -1]]
+]
