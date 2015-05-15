@@ -121,6 +121,14 @@ yieldValue value = get >>= getYieldField
                 YSKeepLooking -> maybe (throwError "RTE: Yield used outside loop.") getYieldField (eParent env)
 
 
+checkIfInLoop :: String -> Exe ()
+checkIfInLoop name = get >>= getYieldField
+    where getYieldField env =
+            case eYieldStatus env of
+                YSFunction -> throwError $ "RTE: " ++ name ++ " used outside loop."
+                YSLoop result -> return ()
+                YSKeepLooking -> maybe (throwError ("RTE: " ++ name ++ " used outside loop.")) getYieldField (eParent env)
+
 
 runStatements :: [Stm] -> Exe BValue
 runStatements stmts = do
@@ -131,8 +139,8 @@ runStatements stmts = do
             result <- runStatement h
             case result of
                  BVReturn _ -> return result
-                 BVContinue _ -> return result
-                 BVBreak _ -> return result
+                 BVContinue _ -> checkIfInLoop "Continue" >> return result
+                 BVBreak _ -> checkIfInLoop "Break" >> return result
                  BVYield value -> yieldValue value >> runStm t
                  _ -> runStm t
 
