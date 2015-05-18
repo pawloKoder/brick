@@ -7,7 +7,7 @@ import Data.List
 import System.IO ( stderr, hPutStrLn )
 
 
-type Exe = ErrorT String (StateT Environment IO)
+type Exe = ErrorT String (StateT (IORef Environment) IO)
 type ExeFunction = [BValue] -> Exe BValue
 
 
@@ -18,10 +18,10 @@ data YeldStatus
 
 
 data Environment = Environment
-    { eVar :: [(String, IORef BValue)]
+    { eVar :: [(String, BValue)]
     , eFun :: [(String, ExeFunction)]
     , eYieldStatus :: YeldStatus
-    , eParent :: Maybe Environment
+    , eParent :: Maybe (IORef Environment)
     }
 
 
@@ -81,10 +81,16 @@ warn error = liftIO $ hPutStrLn stderr error
 getFromEnv :: (Environment -> [(String, a)]) -> String -> Exe a
 getFromEnv selector name = do
     currentEnv <- get
-    maybe (throwError $ "RTE: Cannot find symbol " ++ name ++ " in the scope.") return (getIt currentEnv)
-    where getIt env = case lookup name (selector env) of
-                          Just fun -> Just fun
-                          Nothing -> eParent env >>= getIt
+    maybefun <- getIt currentEnv
+    maybe (throwError $ "RTE: Cannot find symbol " ++ name ++ " in the scope.") return maybefun
+    where
+        getIt maybeiorefenv = do
+            env <- liftIO $ readIORef maybeiorefenv
+            case lookup name (selector env) of
+                            Just fun -> return $ Just fun
+                            Nothing -> case eParent env of
+                                               Just parent -> getIt parent
+                                               Nothing -> return Nothing
 
 
 getFunFromEnv :: String -> Exe ExeFunction
@@ -92,37 +98,35 @@ getFunFromEnv = getFromEnv eFun
 
 
 getVarFromEnv :: String -> Exe BValue
-getVarFromEnv name = getFromEnv eVar name >>= liftIO . readIORef
-
-
--- Inserts or update var.
-declareVarIntoEnv :: String -> BValue -> Exe ()
-declareVarIntoEnv name value = do
-    current <- get
-    case lookup name (eVar current) of
-        Nothing -> do
-            var <- liftIO $ newIORef value
-            put $ current {eVar = (name, var) : (eVar current)}
-        Just var -> liftIO $ modifyIORef var $ const value
+getVarFromEnv = getFromEnv eVar
 
 
 -- Inserts or update var.
 declareFunIntoEnv :: String -> ExeFunction -> Exe ()
 declareFunIntoEnv name fn = do
-    current <- get
-    case lookup name (eFun current) of
-        Nothing -> do
-            put $ current {eFun = (name, fn) : (eFun current)}
-        Just _ -> do
-            warn $ "RTW: You are going to override existing function:" ++ name
-            put $ current {eFun = (name, fn) : filter ((/= name).fst) (eFun current)}
+    tmp <- get
+    current <- liftIO $ readIORef tmp
+    liftIO $ writeIORef tmp $ current {eFun = (name, fn) : filter ((/= name).fst) (eFun current)}
+
+-- Inserts or update var.
+declareVarIntoEnv :: String -> BValue -> Exe ()
+declareVarIntoEnv name value = do
+    tmp <- get
+    current <- liftIO $ readIORef tmp
+    liftIO $ writeIORef tmp $ current {eVar = (name, value) : filter ((/= name).fst) (eVar current)}
 
 
 -- Recursive update value or add new in current env
 updateVarIntoEnv :: String -> BValue -> Exe ()
 updateVarIntoEnv name value = do
-    currentEnv <- get
-    maybe (declareVarIntoEnv name value) (\v->liftIO $ modifyIORef v (const value)) (updateIt currentEnv)
-    where updateIt env = case lookup name (eVar env) of
-                          Just var -> Just var
-                          Nothing -> eParent env >>= updateIt
+    tmp <- get
+    refenv <- updateIt (Just tmp)
+    env <- liftIO $ readIORef refenv
+    liftIO $ writeIORef refenv $ env {eVar = (name, value) : filter ((/= name).fst) (eVar env)}
+    where updateIt maybeiorefenv = do
+            case maybeiorefenv of
+                 Just iorefenv -> do
+                    env <- liftIO $ readIORef iorefenv
+                    case lookup name (eVar env) of
+                        Just var -> return iorefenv
+                        Nothing -> updateIt (eParent env)

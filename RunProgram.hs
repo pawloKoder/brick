@@ -30,7 +30,9 @@ evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
     end <- evalExpresion endExpr >>= integerCast
     ys <- liftIO $ newIORef []
     inEnvironment $ do
-        modify $ \s-> s {eYieldStatus = YSLoop ys}
+        refenv <- get
+        env <- liftIO $ readIORef refenv
+        liftIO $ writeIORef refenv $ env {eYieldStatus = YSLoop ys}
         declareVarIntoEnv ident (BVInt begin)
         forLoop begin end ys
     where forLoop current end ys = if current <= end
@@ -48,7 +50,9 @@ evalExpresion (EFor (CIdent ident) beginExpr endExpr stmts) = do
 evalExpresion (EWhile conditionExpr stmts) = do
     ys <- liftIO $ newIORef []
     inEnvironment $ do
-        modify $ \s-> s {eYieldStatus = YSLoop ys}
+        refenv <- get
+        env <- liftIO $ readIORef refenv
+        liftIO $ writeIORef refenv $ env {eYieldStatus = YSLoop ys}
         whileLoop ys
     where whileLoop ys = do
             cond <- evalExpresion conditionExpr >>= boolCast
@@ -117,16 +121,18 @@ runJumpStatement (SjumpContinueV expr) = evalExpresion expr >>= return . BVConti
 
 yieldValue :: BValue -> Exe ()
 yieldValue value = get >>= getYieldField
-    where getYieldField env =
+    where getYieldField iorefenv = do
+            env <- liftIO $ readIORef iorefenv
             case eYieldStatus env of
                 YSFunction -> throwError "RTE: Yield used outside loop."
                 YSLoop result -> liftIO $ modifyIORef result (value :)
-                YSKeepLooking -> maybe (throwError "RTE: Yield used outside loop.") getYieldField (eParent env)
+                YSKeepLooking -> maybe (throwError "RTE: Yield used outside loop.") (getYieldField) (eParent env)
 
 
 checkIfInLoop :: String -> Exe ()
 checkIfInLoop name = get >>= getYieldField
-    where getYieldField env =
+    where getYieldField iorefenv = do
+            env <- liftIO $ readIORef iorefenv
             case eYieldStatus env of
                 YSFunction -> throwError $ "RTE: " ++ name ++ " used outside loop."
                 YSLoop result -> return ()
@@ -156,7 +162,7 @@ runFunctionStatements stmts = do
         _ -> BVNone
 
 
-makeExeFunction :: [FunParam] -> [Stm] -> Environment -> ExeFunction
+makeExeFunction :: [FunParam] -> [Stm] -> IORef Environment -> ExeFunction
 makeExeFunction params stmts exeEnv = \values -> do
     let joinParams params values = zip (map (\(FunParam (CIdent s)) -> s) params) values
     currentEnv <- get
@@ -181,7 +187,8 @@ runProgram (Progr program) = do
             (SFunDef decl) -> runFunDeclaration decl
             _ -> throwError $ "RTE: Not fun decl in global scope" ++ (show stm)
     let evalResult = inEnvironment $ mapM_ runStm program >> getFunFromEnv "Main" >>= \f -> f []
-    p <- evalStateT (runErrorT evalResult) (Environment [] builtInFunctions YSFunction Nothing)
+    envref <- (newIORef (Environment [] builtInFunctions YSFunction Nothing))
+    p <- evalStateT (runErrorT evalResult) envref
     case p of
         Left l -> return $ Left l
         Right (BVInt r) -> return $ Right r
@@ -193,7 +200,8 @@ runProgram (Progr program) = do
 inEnvironment :: Exe a -> Exe a
 inEnvironment action = do
     current <- get
-    put $ Environment [] [] YSKeepLooking (Just current)
+    envref <- liftIO $ id $ newIORef (Environment [] [] YSKeepLooking (Just current))
+    put envref
     result <- action
     put current
     return result
